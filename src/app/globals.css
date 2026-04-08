@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --flame: #ff3a00;
+  --flame-soft: #ff6b35;
+  --flame-dim: rgba(255, 58, 0, 0.12);
+  --gold: #e8c84a;
+  --green: #00d46a;
+  --red: #ff3b3b;
+  --ink: #080808;
+  --ink2: #101010;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --surface3: #252525;
+  --line: rgba(255, 255, 255, 0.07);
+  --line2: rgba(255, 58, 0, 0.2);
+  --white: #f0ede8;
+  --dim: #6a6a6a;
+  --dim2: #444;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-body), sans-serif;
+  overflow-x: hidden;
+}
+
+.display-font {
+  font-family: var(--font-display), sans-serif;
+}
+
+.ui-font {
+  font-family: var(--font-ui), sans-serif;
+}
+
+.mono-font {
+  font-family: var(--font-mono), monospace;
+}
+
+.section-shell {
+  @apply mx-auto max-w-7xl px-6 lg:px-8;
+}
+
+.section-space {
+  @apply py-20;
+}
+
+.section-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--flame);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(2.8rem, 5vw, 4.25rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.section-title .hl {
+  color: var(--flame);
+}
+
+.glow-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid var(--line);
+  box-shadow: 0 0 0 1px rgba(255,77,10,0.03), 0 24px 60px rgba(0,0,0,0.32);
+}
+
+.hero-overlay {
+  background:
+    linear-gradient(rgba(8,8,8,0.72), rgba(8,8,8,0.9)),
+    radial-gradient(circle at 78% 46%, rgba(255,58,0,0.14), transparent 28%);
+}
+
+.broadcast-grid {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 62px 62px;
+}
+
+.ticker-wrap {
+  background: var(--flame);
+  padding: 8px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ticker-track {
+  display: inline-block;
+  animation: tick 30s linear infinite;
+}
+
+.ticker-track span {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0 48px;
+}
+
+.ticker-track span::before {
+  content: "◆ ";
+  font-size: 8px;
+  margin-right: 8px;
+}
+
+@keyframes tick {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
