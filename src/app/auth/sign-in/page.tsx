@@ -44,7 +44,7 @@ export default function SignInPage() {
             <div className="section-label">Secure Access</div>
             <h1 className="section-title">Sign In</h1>
             <p className="mt-4 text-sm text-white/55">
-              Use the same mock credentials as the HTML demo.
+              Use mock credentials.
             </p>
           </div>
 
