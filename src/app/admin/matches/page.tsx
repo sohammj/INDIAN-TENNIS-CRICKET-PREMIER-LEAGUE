@@ -31,7 +31,7 @@ export default function AdminMatchesPage() {
                   <button className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
                     Edit Match
                   </button>
-                  <button className="ui-font border border-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
+                  <button className="ui-font border border-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-white">
                     View Summary
                   </button>
                 </div>

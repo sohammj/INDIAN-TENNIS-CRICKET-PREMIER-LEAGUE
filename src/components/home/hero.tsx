@@ -169,7 +169,7 @@ export function Hero() {
                 ))}
               </div>
             </div>
-
+{/* 
             <div className="glow-card flex items-center justify-between p-4">
               <span className="mono-font text-[11px] uppercase tracking-[0.24em] text-white/40">
                 42,310+ Registered
@@ -180,6 +180,18 @@ export function Hero() {
               >
                 Watch Live →
               </Link>
+            </div> */}
+            <div className="mt-8 glow-card flex flex-wrap items-center justify-between gap-3 px-6 py-5">
+                <span className="flex-1 mono-font text-[11px] uppercase tracking-[0.24em] text-white/40">
+                    42,310+ Registered
+                </span>
+
+                <Link
+                    href={`/match-center/${liveMatch.id}`}
+                    className="ui-font whitespace-nowrap bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
+                >
+                    Watch Live →
+                </Link>
             </div>
           </div>
         </motion.div>

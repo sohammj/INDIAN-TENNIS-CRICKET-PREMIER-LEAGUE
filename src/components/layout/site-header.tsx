@@ -32,7 +32,8 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-xl">
+    // <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
         {/* <Link href="/" className="flex items-center gap-3">
           <span className="h-2 w-2 rounded-full bg-[var(--flame)]" />
