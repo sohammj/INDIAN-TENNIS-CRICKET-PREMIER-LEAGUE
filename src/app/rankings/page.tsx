@@ -36,7 +36,7 @@ export default function RankingsPage() {
               onClick={() => setZone(item)}
               className={`ui-font border px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] ${
                 zone === item
-                  ? "border-[var(--flame)] bg-[var(--flame)] text-white"
+                  ? "border-[var(--flame)] bg-[var(--flame)] text-black"
                   : "border-white/10 bg-[var(--surface)] text-white/55"
               }`}
             >

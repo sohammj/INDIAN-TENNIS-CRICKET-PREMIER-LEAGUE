@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-:root {
+/* :root {
   --flame: #ff3a00;
   --flame-soft: #ff6b35;
   --flame-dim: rgba(255, 58, 0, 0.12);
@@ -14,6 +14,24 @@
   --surface3: #252525;
   --line: rgba(255, 255, 255, 0.07);
   --line2: rgba(255, 58, 0, 0.2);
+  --white: #f0ede8;
+  --dim: #6a6a6a;
+  --dim2: #444;
+} */
+ :root {
+  --flame: #c7ff00;
+  --flame-soft: #b2ea00;
+  --flame-dim: rgba(199, 255, 0, 0.12);
+  --gold: #eaff6b;
+  --green: #c7ff00;
+  --red: #ff3b3b;
+  --ink: #080808;
+  --ink2: #101010;
+  --surface: #161616;
+  --surface2: #1e1e1e;
+  --surface3: #252525;
+  --line: rgba(255, 255, 255, 0.07);
+  --line2: rgba(199, 255, 0, 0.22);
   --white: #f0ede8;
   --dim: #6a6a6a;
   --dim2: #444;
@@ -66,21 +84,46 @@ body {
   text-transform: uppercase;
 }
 
+/* .section-title .hl {
+  color: var(--flame);
+} */
 .section-title .hl {
   color: var(--flame);
+  text-shadow: 0 0 12px rgba(199, 255, 0, 0.35);
 }
-
-.glow-card {
+/* .glow-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
   border: 1px solid var(--line);
   box-shadow: 0 0 0 1px rgba(255,77,10,0.03), 0 24px 60px rgba(0,0,0,0.32);
+} */
+ .glow-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid var(--line);
+  box-shadow:
+    0 0 0 1px rgba(199,255,0,0.05),
+    0 18px 40px rgba(0,0,0,0.28);
 }
+.glow-green {
+  box-shadow:
+    0 0 0 1px rgba(199,255,0,0.16),
+    0 0 22px rgba(199,255,0,0.06),
+    0 24px 60px rgba(0,0,0,0.32);
+}
+.neon-text {
+  text-shadow: 0 0 12px rgba(199,255,0,0.35);
+}
+/* .hero-overlay {
+  background:
+    linear-gradient(rgba(8,8,8,0.72), rgba(8,8,8,0.9)),
+    radial-gradient(circle at 78% 46%, rgba(255,58,0,0.14), transparent 28%);
+} */
 
 .hero-overlay {
   background:
     linear-gradient(rgba(8,8,8,0.72), rgba(8,8,8,0.9)),
-    radial-gradient(circle at 78% 46%, rgba(255,58,0,0.14), transparent 28%);
+    radial-gradient(circle at 78% 46%, rgba(199,255,0,0.14), transparent 28%);
 }
+
 
 .broadcast-grid {
   background-image:

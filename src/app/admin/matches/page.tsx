@@ -28,10 +28,10 @@ export default function AdminMatchesPage() {
                 </div>
 
                 <div className="mt-5 flex gap-3">
-                  <button className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-white">
+                  <button className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
                     Edit Match
                   </button>
-                  <button className="ui-font border border-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-white">
+                  <button className="ui-font border border-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
                     View Summary
                   </button>
                 </div>

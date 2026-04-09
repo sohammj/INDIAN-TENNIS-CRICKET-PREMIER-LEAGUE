@@ -139,7 +139,7 @@ export default async function MatchDetailPage({
                     key={`${ball.label}-${index}`}
                     className={`mono-font flex h-10 w-10 items-center justify-center rounded-full border text-xs ${
                     ball.type === "four"
-                        ? "border-[rgba(255,58,0,0.3)] bg-[var(--flame)] text-white"
+                        ? "border-[rgba(255,58,0,0.3)] bg-[var(--flame)] text-black"
                         : ball.type === "six"
                         ? "border-[rgba(232,200,74,0.3)] bg-[var(--gold)] text-black"
                         : ball.type === "wide"

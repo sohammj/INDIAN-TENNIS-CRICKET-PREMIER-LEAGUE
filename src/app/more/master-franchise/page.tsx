@@ -21,7 +21,7 @@ export default function MasterFranchisePage() {
                     <input placeholder="Contact Person" className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
                     <input placeholder="City / Region" className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
                     <textarea placeholder="Tell us about your proposal" rows={5} className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
-                    <button className="ui-font w-fit bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-white">
+                    <button className="ui-font w-fit bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-black">
                     Submit Request
                     </button>
                 </div>

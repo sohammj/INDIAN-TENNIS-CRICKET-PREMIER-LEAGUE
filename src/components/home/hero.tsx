@@ -74,7 +74,7 @@ export function Hero() {
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               href="/match-center"
-              className="ui-font bg-[var(--flame)] px-6 py-3 text-sm font-bold uppercase tracking-[0.24em] text-white transition hover:bg-[var(--flame-soft)]"
+              className="ui-font bg-[var(--flame)] px-6 py-3 text-sm font-bold uppercase tracking-[0.24em] text-black transition hover:bg-[var(--flame-soft)]"
             >
               Explore Match Center
             </Link>
@@ -138,7 +138,7 @@ export function Hero() {
                     key={`${ball.label}-${index}`}
                     className={`mono-font flex h-10 w-10 items-center justify-center rounded-full border text-xs ${
                       ball.type === "four"
-                        ? "border-[rgba(255,58,0,0.3)] bg-[var(--flame)] text-white"
+                        ? "border-[rgba(255,58,0,0.3)] bg-[var(--flame)] text-black"
                         : ball.type === "six"
                         ? "border-[rgba(232,200,74,0.3)] bg-[var(--gold)] text-black"
                         : ball.type === "wide"
@@ -176,7 +176,7 @@ export function Hero() {
               </span>
               <Link
                 href={`/match-center/${liveMatch.id}`}
-                className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-white"
+                className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
               >
                 Watch Live →
               </Link>

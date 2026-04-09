@@ -26,7 +26,7 @@ export function MatchPreviewSection() {
         </div>
         <Link
           href="/match-center"
-          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-white"
+          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-black"
         >
           All Matches →
         </Link>
@@ -107,7 +107,7 @@ export function RankingsPreviewSection() {
         </div>
         <Link
           href="/rankings"
-          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-white"
+          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-black"
         >
           View Rankings →
         </Link>
@@ -157,7 +157,7 @@ export function TeamsPreviewSection() {
         </div>
         <Link
           href="/teams"
-          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-white"
+          className="ui-font border border-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] hover:bg-[var(--flame)] hover:text-black"
         >
           All Teams →
         </Link>

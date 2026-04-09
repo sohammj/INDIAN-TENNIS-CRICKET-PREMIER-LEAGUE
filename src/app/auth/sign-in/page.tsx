@@ -73,7 +73,7 @@ export default function SignInPage() {
             </div>
           ) : null}
 
-          <button className="ui-font w-full bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-white">
+          <button className="ui-font w-full bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-black">
             Login
           </button>
         </form>

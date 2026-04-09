@@ -92,7 +92,7 @@ export default function DashboardPage() {
                             amount: tour.fee,
                           })
                         }
-                        className="ui-font mt-3 bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-white"
+                        className="ui-font mt-3 bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
                       >
                         Register
                       </button>
@@ -113,7 +113,7 @@ export default function DashboardPage() {
               <input defaultValue="+91 98765 43210" className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
               <input defaultValue="Mumbai" className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
               <input defaultValue="Linking Road, Bandra West" className="border border-white/10 bg-black/40 px-4 py-3 outline-none" />
-              <button className="ui-font w-fit bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-white">
+              <button className="ui-font w-fit bg-[var(--flame)] px-5 py-3 text-sm font-bold uppercase tracking-[0.22em] text-black">
                 Save Changes
               </button>
             </div>
