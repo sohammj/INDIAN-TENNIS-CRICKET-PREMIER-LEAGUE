@@ -58,7 +58,7 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="ui-font relative text-sm font-semibold uppercase tracking-[0.28em] text-black/60 transition hover:text-[#c8ff00]"
+                className="ui-font relative text-sm font-semibold uppercase tracking-[0.28em] text-black/60 transition hover:text-black"
               >
                 {item.label}
                 {active && (
