@@ -33,7 +33,8 @@ export default function SignInPage() {
 
   return (
     <StadiumBg overlay="light">
-        <div className="section-shell flex min-h-[calc(100vh-4rem)] items-center justify-center py-20">
+      <div className="min-h-screen flex flex-col pt-24">
+        <div className="flex-1 section-shell flex items-center justify-center py-20">
           <form
             onSubmit={handleSubmit}
             className="glow-card w-full max-w-md space-y-5 p-8"
@@ -78,6 +79,7 @@ export default function SignInPage() {
             </button>
           </form>
         </div>
+      </div>
     </StadiumBg>
   );
 }
