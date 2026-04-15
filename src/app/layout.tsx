@@ -42,11 +42,11 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body
-        className={`${rajdhani.variable} ${oswald.variable} ${barlow.variable} ${plex.variable} bg-[#080808] text-[#F0EDE8]`}
+        className={`${rajdhani.variable} ${oswald.variable} ${barlow.variable} ${plex.variable} bg-white text-[#111111]`}
       >
         <AuthProvider>
           <SiteHeader />
-          <main className="min-h-screen pt-16">{children}</main>
+          <main className="min-h-screen bg-white">{children}</main>
           <SiteFooter />
         </AuthProvider>
       </body>

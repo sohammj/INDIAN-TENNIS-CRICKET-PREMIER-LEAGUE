@@ -23,7 +23,7 @@ export default function AdminRankingsPage() {
   }, [zone, query]);
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0b0b0b]">
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
         <AdminSidebar />
 
@@ -38,10 +38,10 @@ export default function AdminRankingsPage() {
               <button
                 key={item}
                 onClick={() => setZone(item)}
-                className={`ui-font border px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] ${
+                className={`ui-font rounded-full border px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] transition ${
                   zone === item
-                    ? "border-[var(--flame)] bg-[var(--flame)] text-black"
-                    : "border-white/10 bg-[var(--surface)] text-white/55"
+                    ? "border-[#c8ff00] bg-[#c8ff00] text-black"
+                    : "border-black/10 bg-white text-black/55 hover:bg-black/[0.03]"
                 }`}
               >
                 {item}
@@ -52,14 +52,14 @@ export default function AdminRankingsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search player, city or ID"
-              className="mono-font ml-auto min-w-[240px] border border-white/10 bg-[var(--surface)] px-4 py-2 text-sm text-white outline-none"
+              className="mono-font ml-auto min-w-[240px] rounded-full border border-black/10 bg-white px-4 py-2 text-sm text-black outline-none placeholder:text-black/35"
             />
           </div>
 
           <div className="mt-8 overflow-x-auto glow-card">
             <table className="w-full min-w-[980px] border-collapse">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-black/10">
                   {[
                     "Rank",
                     "Player",
@@ -73,7 +73,7 @@ export default function AdminRankingsPage() {
                   ].map((head) => (
                     <th
                       key={head}
-                      className="mono-font px-4 py-4 text-left text-[10px] uppercase tracking-[0.22em] text-white/40"
+                      className="mono-font px-4 py-4 text-left text-[10px] uppercase tracking-[0.22em] text-black/40"
                     >
                       {head}
                     </th>
@@ -85,9 +85,9 @@ export default function AdminRankingsPage() {
                 {filtered.map((player) => (
                   <tr
                     key={player.playerId}
-                    className="border-b border-white/10 hover:bg-[rgba(255,58,0,0.03)]"
+                    className="border-b border-black/10 hover:bg-[#c8ff00]/[0.08]"
                   >
-                    <td className="display-font px-4 py-4 text-3xl">
+                    <td className="display-font px-4 py-4 text-3xl text-black">
                       {player.rank}
                     </td>
 
@@ -100,35 +100,35 @@ export default function AdminRankingsPage() {
                           {player.initials}
                         </div>
                         <div>
-                          <div className="ui-font text-sm font-bold uppercase">
+                          <div className="ui-font text-sm font-bold uppercase text-black">
                             {player.name}
                           </div>
-                          <div className="mono-font mt-1 text-[10px] uppercase tracking-[0.16em] text-white/40">
+                          <div className="mono-font mt-1 text-[10px] uppercase tracking-[0.16em] text-black/40">
                             Elite Performer
                           </div>
                         </div>
                       </div>
                     </td>
 
-                    <td className="mono-font px-4 py-4 text-sm text-white/55">
+                    <td className="mono-font px-4 py-4 text-sm text-black/55">
                       {player.playerId}
                     </td>
-                    <td className="mono-font px-4 py-4 text-sm text-[var(--flame)]">
+                    <td className="mono-font px-4 py-4 text-sm text-[#7fb800]">
                       {player.zone}
                     </td>
-                    <td className="mono-font px-4 py-4 text-sm text-white/55">
+                    <td className="mono-font px-4 py-4 text-sm text-black/55">
                       {player.city}
                     </td>
-                    <td className="mono-font px-4 py-4 text-sm text-white/55">
+                    <td className="mono-font px-4 py-4 text-sm text-black/55">
                       {player.matches}
                     </td>
-                    <td className="mono-font px-4 py-4 text-sm text-white/55">
+                    <td className="mono-font px-4 py-4 text-sm text-black/55">
                       {player.runs}
                     </td>
-                    <td className="mono-font px-4 py-4 text-sm text-white/55">
+                    <td className="mono-font px-4 py-4 text-sm text-black/55">
                       {player.wickets}
                     </td>
-                    <td className="display-font px-4 py-4 text-2xl text-[var(--flame)]">
+                    <td className="display-font px-4 py-4 text-2xl text-[#7fb800]">
                       {player.points}
                     </td>
                   </tr>

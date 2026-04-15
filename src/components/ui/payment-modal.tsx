@@ -16,23 +16,23 @@ export function PaymentModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 px-4">
-      <div className="w-full max-w-md overflow-hidden rounded-sm border border-white/10 bg-[#111] shadow-2xl">
-        <div className="bg-[#072654] px-6 py-5">
-          <div className="text-xl font-semibold text-white">Razorpay</div>
-          <div className="mt-1 text-sm text-white/70">Test Payment Window</div>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-4 backdrop-blur-sm">
+      <div className="w-full max-w-md overflow-hidden rounded-[1.5rem] border border-black/10 bg-white shadow-2xl">
+        <div className="border-b border-black/10 bg-[#f7f7f3] px-6 py-5">
+          <div className="text-xl font-semibold text-black">Razorpay</div>
+          <div className="mt-1 text-sm text-black/60">Test Payment Window</div>
         </div>
 
         <div className="p-6">
-          <div className="text-sm text-white/55">Tournament</div>
-          <div className="mt-1 text-lg font-semibold text-white">
+          <div className="text-sm text-black/50">Tournament</div>
+          <div className="mt-1 text-lg font-semibold text-black">
             {tournamentTitle}
           </div>
 
-          <div className="mt-5 text-sm text-white/55">Amount</div>
-          <div className="mt-1 text-3xl font-bold text-white">{amount}</div>
+          <div className="mt-5 text-sm text-black/50">Amount</div>
+          <div className="mt-1 text-3xl font-bold text-black">{amount}</div>
 
-          <div className="mt-6 rounded border border-white/10 bg-white/[0.03] p-4 text-sm text-white/65">
+          <div className="mt-6 rounded-2xl border border-black/10 bg-[#fafaf7] p-4 text-sm leading-6 text-black/65">
             This is a demo payment popup for now. Later you can connect real
             Razorpay order creation and checkout.
           </div>
@@ -40,7 +40,7 @@ export function PaymentModal({
           <div className="mt-6 flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 border border-white/10 px-4 py-3 text-sm font-medium text-white/70"
+              className="flex-1 rounded-full border border-black/10 px-4 py-3 text-sm font-medium text-black/70 transition hover:bg-black/[0.03]"
             >
               Cancel
             </button>
@@ -49,7 +49,7 @@ export function PaymentModal({
                 alert(`Demo payment successful for ${tournamentTitle}`);
                 onClose();
               }}
-              className="flex-1 bg-[#2b7cff] px-4 py-3 text-sm font-semibold text-white"
+              className="flex-1 rounded-full bg-[#c8ff00] px-4 py-3 text-sm font-semibold text-black transition hover:opacity-90"
             >
               Pay Now
             </button>

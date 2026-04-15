@@ -3,7 +3,7 @@ import { matches } from "@/lib/data";
 
 export default function AdminMatchesPage() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0b0b0b]">
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
         <AdminSidebar />
         <main className="p-8 lg:p-10">
@@ -15,23 +15,23 @@ export default function AdminMatchesPage() {
               <div key={match.id} className="glow-card p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div>
-                    <div className="ui-font text-xl font-bold uppercase">
+                    <div className="ui-font text-xl font-bold uppercase text-black">
                       {match.teamA.name} vs {match.teamB.name}
                     </div>
-                    <div className="mono-font mt-2 text-xs uppercase tracking-[0.2em] text-white/40">
+                    <div className="mono-font mt-2 text-xs uppercase tracking-[0.2em] text-black/40">
                       {match.venue} · {match.overs}
                     </div>
                   </div>
-                  <div className="mono-font text-sm uppercase tracking-[0.2em] text-[var(--flame)]">
+                  <div className="mono-font text-sm uppercase tracking-[0.2em] text-[#7fb800]">
                     {match.badge}
                   </div>
                 </div>
 
                 <div className="mt-5 flex gap-3">
-                  <button className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
+                  <button className="ui-font rounded-full bg-[#c8ff00] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
                     Edit Match
                   </button>
-                  <button className="ui-font border border-white/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-white">
+                  <button className="ui-font rounded-full border border-black/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
                     View Summary
                   </button>
                 </div>

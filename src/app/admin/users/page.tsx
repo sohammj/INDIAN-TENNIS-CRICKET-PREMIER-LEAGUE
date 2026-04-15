@@ -8,7 +8,7 @@ const users = [
 
 export default function AdminUsersPage() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0b0b0b]">
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
         <AdminSidebar />
         <main className="p-8 lg:p-10">
@@ -18,9 +18,12 @@ export default function AdminUsersPage() {
           <div className="mt-10 overflow-x-auto glow-card p-4">
             <table className="w-full min-w-[700px] border-collapse">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-black/10">
                   {["Name", "Email", "Role", "Status"].map((head) => (
-                    <th key={head} className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-white/40">
+                    <th
+                      key={head}
+                      className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-black/40"
+                    >
                       {head}
                     </th>
                   ))}
@@ -28,11 +31,11 @@ export default function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.email} className="border-b border-white/10">
-                    <td className="px-4 py-4 text-sm">{user.name}</td>
-                    <td className="px-4 py-4 text-sm text-white/60">{user.email}</td>
-                    <td className="px-4 py-4 text-sm text-white/60">{user.role}</td>
-                    <td className="px-4 py-4 text-sm text-[var(--flame)]">{user.status}</td>
+                  <tr key={user.email} className="border-b border-black/10">
+                    <td className="px-4 py-4 text-sm text-black">{user.name}</td>
+                    <td className="px-4 py-4 text-sm text-black/60">{user.email}</td>
+                    <td className="px-4 py-4 text-sm text-black/60">{user.role}</td>
+                    <td className="px-4 py-4 text-sm text-[#7fb800]">{user.status}</td>
                   </tr>
                 ))}
               </tbody>

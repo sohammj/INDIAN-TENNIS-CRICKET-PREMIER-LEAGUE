@@ -2,7 +2,7 @@ import { AdminSidebar } from "@/components/layout/admin-sidebar";
 
 export default function AdminLiveScoringPage() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0b0b0b]">
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
         <AdminSidebar />
         <main className="p-8 lg:p-10">
@@ -11,12 +11,15 @@ export default function AdminLiveScoringPage() {
 
           <div className="mt-10 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
             <div className="glow-card p-6">
-              <div className="ui-font text-lg font-bold uppercase tracking-[0.18em] text-[var(--flame)]">
+              <div className="ui-font text-lg font-bold uppercase tracking-[0.18em] text-[#7fb800]">
                 Ball Input Console
               </div>
-              <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3">
+              <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-5">
                 {["0", "1", "2", "3", "4", "6", "Wide", "No Ball", "Wicket", "Run Out"].map((item) => (
-                  <button key={item} className="ui-font border border-white/10 bg-white/[0.03] px-4 py-4 text-sm font-bold uppercase tracking-[0.16em] text-white/80">
+                  <button
+                    key={item}
+                    className="ui-font rounded-xl border border-black/10 bg-white px-4 py-4 text-sm font-bold uppercase tracking-[0.16em] text-black/80 transition hover:bg-[#c8ff00]/20"
+                  >
                     {item}
                   </button>
                 ))}
@@ -24,12 +27,15 @@ export default function AdminLiveScoringPage() {
             </div>
 
             <div className="glow-card p-6">
-              <div className="ui-font text-lg font-bold uppercase tracking-[0.18em] text-[var(--flame)]">
+              <div className="ui-font text-lg font-bold uppercase tracking-[0.18em] text-[#7fb800]">
                 Current Over Feed
               </div>
               <div className="mt-5 space-y-3">
                 {["1", "Wd", "4", "6", "•", "2"].map((ball, i) => (
-                  <div key={i} className="border border-white/10 px-4 py-3 text-sm text-white/70">
+                  <div
+                    key={i}
+                    className="rounded-xl border border-black/10 bg-[#fafaf7] px-4 py-3 text-sm text-black/70"
+                  >
                     Ball {i + 1}: {ball}
                   </div>
                 ))}

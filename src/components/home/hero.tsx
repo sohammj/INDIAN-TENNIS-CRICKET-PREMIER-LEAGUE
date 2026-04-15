@@ -5,12 +5,12 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { liveMatch } from "@/lib/data";
 
-const stats = [
-  { value: "16", label: "Franchises" },
-  { value: "20+", label: "Selection Cities" },
-  { value: "T10", label: "Format" },
-  { value: "₹999", label: "Entry Fee" },
-];
+// const stats = [
+//   { value: "16", label: "Franchises" },
+//   { value: "20+", label: "Selection Cities" },
+//   { value: "T10", label: "Format" },
+//   { value: "₹999", label: "Entry Fee" },
+// ];
 
 export function Hero() {
   return (
@@ -23,37 +23,32 @@ export function Hero() {
           priority
           className="object-cover object-center"
         />
-        <div className="hero-overlay absolute inset-0" />
-        <div className="broadcast-grid absolute inset-0 opacity-70" />
       </div>
 
-      <div className="section-shell relative grid min-h-[calc(100vh-4rem)] items-center gap-12 py-24 lg:grid-cols-[1.15fr_0.85fr]">
+      {/* Main two-column hero grid */}
+      <div className="section-shell relative grid min-h-[calc(100vh-10rem)] items-center gap-12 pt-24 pb-32 lg:grid-cols-[1.15fr_0.85fr]">
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="max-w-3xl"
         >
-          <div className="mono-font mb-6 inline-flex items-center gap-3 border border-[var(--line2)] bg-[rgba(255,58,0,0.08)] px-4 py-2 text-[11px] uppercase tracking-[0.36em] text-[var(--flame)]">
+          <div className="mono-font mb-6 inline-flex items-center gap-3 border border-emerald-500/30 bg-emerald-900/30 px-4 py-2 text-[11px] uppercase tracking-[0.36em] text-emerald-400">
             <span>◆</span>
-            <span>Season 2026 - Registrations Open</span>
+            <span>Season 2026 · Registrations Open</span>
           </div>
 
-          <h1 className="display-font text-[clamp(4.6rem,10vw,8.8rem)] uppercase leading-[0.88] tracking-[0.02em]">
+          <h1 className="display-font text-[clamp(4.6rem,10vw,8.8rem)] uppercase leading-[0.88] tracking-[0.02em] text-white">
             Indian
             <br />
-            <span className="text-[var(--flame)]">Tennis</span>
+            <span className="text-[#c8ff00]">Tennis</span>
             <br />
             Cricket
             <br />
             Premier
           </h1>
 
-          <p className="ui-font mt-6 max-w-2xl text-base uppercase tracking-[0.28em] text-white/45">
-            Gully se glory tak · T10 format · 16 teams
-          </p>
-
-          <div className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 md:grid-cols-4">
+          {/* <div className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 md:grid-cols-4">
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -69,7 +64,7 @@ export function Hero() {
                 </div>
               </motion.div>
             ))}
-          </div>
+          </div> */}
 
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
@@ -107,7 +102,10 @@ export function Hero() {
 
               <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-6">
                 <div>
-                  <div className="display-font text-4xl" style={{ color: liveMatch.teamA.color }}>
+                  <div
+                    className="display-font text-4xl"
+                    style={{ color: liveMatch.teamA.color }}
+                  >
                     {liveMatch.teamA.short}
                   </div>
                   <div className="mono-font mt-1 text-[11px] uppercase tracking-[0.22em] text-white/45">
@@ -115,7 +113,7 @@ export function Hero() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <div className="display-font text-6xl leading-none text-[var(--flame)]">
+                  <div className="display-font text-6xl leading-none text-[#c8ff00]">
                     {liveMatch.scoreA}
                   </div>
                   <div className="mono-font mt-2 text-[11px] uppercase tracking-[0.22em] text-white/45">
@@ -123,7 +121,10 @@ export function Hero() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="display-font text-4xl" style={{ color: liveMatch.teamB.color }}>
+                  <div
+                    className="display-font text-4xl"
+                    style={{ color: liveMatch.teamB.color }}
+                  >
                     {liveMatch.teamB.short}
                   </div>
                   <div className="mono-font mt-1 text-[11px] uppercase tracking-[0.22em] text-white/45">
@@ -138,7 +139,7 @@ export function Hero() {
                     key={`${ball.label}-${index}`}
                     className={`mono-font flex h-10 w-10 items-center justify-center rounded-full border text-xs ${
                       ball.type === "four"
-                        ? "border-[rgba(255,58,0,0.3)] bg-[var(--flame)] text-black"
+                        ? "border-[rgba(200,255,0,0.4)] bg-[#c8ff00] text-black"
                         : ball.type === "six"
                         ? "border-[rgba(232,200,74,0.3)] bg-[var(--gold)] text-black"
                         : ball.type === "wide"
@@ -157,42 +158,64 @@ export function Hero() {
 
               <div className="mt-5 space-y-3 border-t border-white/10 pt-4 text-sm">
                 {liveMatch.batters?.map((batter) => (
-                  <div key={batter.name} className="flex items-center justify-between">
-                    <span className={`ui-font ${batter.strike ? "text-white" : "text-white/70"}`}>
+                  <div
+                    key={batter.name}
+                    className="flex items-center justify-between"
+                  >
+                    <span
+                      className={`ui-font ${
+                        batter.strike ? "text-white" : "text-white/70"
+                      }`}
+                    >
                       {batter.name}
                       {batter.strike ? " ★" : ""}
                     </span>
-                    <span className={`display-font text-xl ${batter.strike ? "text-[var(--flame)]" : "text-white"}`}>
+                    <span
+                      className={`display-font text-xl ${
+                        batter.strike ? "text-[#c8ff00]" : "text-white"
+                      }`}
+                    >
                       {batter.score}
                     </span>
                   </div>
                 ))}
               </div>
             </div>
-{/* 
-            <div className="glow-card flex items-center justify-between p-4">
-              <span className="mono-font text-[11px] uppercase tracking-[0.24em] text-white/40">
+
+            <div className="glow-card flex flex-wrap items-center justify-between gap-3 px-6 py-5">
+              <span className="flex-1 mono-font text-[11px] uppercase tracking-[0.24em] text-white/40">
                 42,310+ Registered
               </span>
               <Link
                 href={`/match-center/${liveMatch.id}`}
-                className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
+                className="ui-font whitespace-nowrap bg-[#c8ff00] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
               >
                 Watch Live →
               </Link>
-            </div> */}
-            <div className="mt-8 glow-card flex flex-wrap items-center justify-between gap-3 px-6 py-5">
-                <span className="flex-1 mono-font text-[11px] uppercase tracking-[0.24em] text-white/40">
-                    42,310+ Registered
-                </span>
-
-                <Link
-                    href={`/match-center/${liveMatch.id}`}
-                    className="ui-font whitespace-nowrap bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-black"
-                >
-                    Watch Live →
-                </Link>
             </div>
+          </div>
+        </motion.div>
+        <div> </div>
+        <div> </div>
+
+        {/* moved upward inside hero */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55, duration: 0.7 }}
+          className="pointer-events-none absolute bottom-8 left-0 right-0 z-20"
+        >
+          <div className="section-shell text-center">
+            <p className="display-font text-[clamp(2.8rem,7.5vw,6rem)] uppercase leading-none tracking-[0.03em]">
+              <span className="text-[#FF6B35]">Gully Se</span>
+              <span className="mx-4 text-[var(--gold)]">★</span>
+              <span className="text-[#c8ff00]">Glory</span>
+              <span className="mx-3 text-white/60">·</span>
+              <span className="text-[#c8ff00]">Tak</span>
+            </p>
+            <p className="mono-font mt-3 text-[11px] uppercase tracking-[0.42em] text-white/45">
+              ★ T10 Format · 16 Teams
+            </p>
           </div>
         </motion.div>
       </div>

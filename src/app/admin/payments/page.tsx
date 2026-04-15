@@ -8,7 +8,7 @@ const payments = [
 
 export default function AdminPaymentsPage() {
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-[#0b0b0b]">
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
       <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
         <AdminSidebar />
         <main className="p-8 lg:p-10">
@@ -18,9 +18,12 @@ export default function AdminPaymentsPage() {
           <div className="mt-10 overflow-x-auto glow-card p-4">
             <table className="w-full min-w-[760px] border-collapse">
               <thead>
-                <tr className="border-b border-white/10">
+                <tr className="border-b border-black/10">
                   {["Transaction ID", "Player", "Amount", "Method", "Status"].map((head) => (
-                    <th key={head} className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-white/40">
+                    <th
+                      key={head}
+                      className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-black/40"
+                    >
                       {head}
                     </th>
                   ))}
@@ -28,12 +31,12 @@ export default function AdminPaymentsPage() {
               </thead>
               <tbody>
                 {payments.map((row) => (
-                  <tr key={row.id} className="border-b border-white/10">
-                    <td className="px-4 py-4 text-sm">{row.id}</td>
-                    <td className="px-4 py-4 text-sm text-white/70">{row.player}</td>
-                    <td className="px-4 py-4 text-sm text-white/70">{row.amount}</td>
-                    <td className="px-4 py-4 text-sm text-white/70">{row.method}</td>
-                    <td className="px-4 py-4 text-sm text-[var(--flame)]">{row.status}</td>
+                  <tr key={row.id} className="border-b border-black/10">
+                    <td className="px-4 py-4 text-sm text-black">{row.id}</td>
+                    <td className="px-4 py-4 text-sm text-black/70">{row.player}</td>
+                    <td className="px-4 py-4 text-sm text-black/70">{row.amount}</td>
+                    <td className="px-4 py-4 text-sm text-black/70">{row.method}</td>
+                    <td className="px-4 py-4 text-sm text-[#7fb800]">{row.status}</td>
                   </tr>
                 ))}
               </tbody>

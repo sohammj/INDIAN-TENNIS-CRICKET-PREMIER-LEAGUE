@@ -18,22 +18,23 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="border-r border-white/10 bg-black/70 p-6">
-      <div className="mono-font border-b border-white/10 pb-4 text-[11px] uppercase tracking-[0.24em] text-white/45">
+    <aside className="border-r border-gray-200 bg-white p-6">
+      <div className="mono-font border-b border-gray-200 pb-4 text-[11px] uppercase tracking-[0.24em] text-gray-400">
         Admin Panel · ITCPL 2026
       </div>
 
-      <div className="mt-6 space-y-2">
+      <div className="mt-6 space-y-1">
         {adminNav.map((item) => {
           const active = pathname === item.href;
+
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`block ui-font px-4 py-3 text-sm font-bold uppercase tracking-[0.18em] ${
+              className={`block ui-font px-4 py-3 text-sm font-bold uppercase tracking-[0.18em] transition ${
                 active
-                  ? "bg-[rgba(255,58,0,0.08)] text-[var(--flame)]"
-                  : "text-white/60 hover:bg-white/[0.03]"
+                  ? "border-l-2 border-[var(--flame)] bg-[rgba(255,58,0,0.06)] text-[var(--flame)]"
+                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               }`}
             >
               {item.label}

@@ -26,26 +26,26 @@ export function SiteHeader() {
   if (user?.role === "player") {
     navItems.push({ label: "Dashboard", href: "/dashboard" });
   }
-
   if (user?.role === "admin") {
     navItems.push({ label: "Admin", href: "/admin" });
   }
 
+  const isHome = pathname === "/";
+
   return (
-    // <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur-xl">
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent backdrop-blur-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)]">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition ${
+        isHome
+          ? "border-white/20 bg-white/20"
+          : "border-black/10 bg-white/90"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
-        {/* <Link href="/" className="flex items-center gap-3">
-          <span className="h-2 w-2 rounded-full bg-[var(--flame)]" />
-          <span className="display-font text-2xl font-semibold uppercase tracking-[0.28em]">
-            ITC <span className="text-[var(--flame)]">PL</span>
-          </span>
-        </Link> */}
         <Link href="/" className="flex items-center gap-3">
-            <TennisBall />
-            <span className="display-font text-2xl font-semibold uppercase tracking-[0.28em]">
-                ITC <span className="text-[var(--flame)]">PL</span>
-            </span>
+          <TennisBall />
+          <span className="text-black display-font text-2xl font-semibold uppercase tracking-[0.28em]">
+            ITC <span className="text-[#c8ff00]">PL</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
@@ -58,15 +58,15 @@ export function SiteHeader() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="ui-font relative text-sm font-semibold uppercase tracking-[0.28em] text-white/60 transition hover:text-white"
+                className="ui-font relative text-sm font-semibold uppercase tracking-[0.28em] text-black/60 transition hover:text-[#c8ff00]"
               >
                 {item.label}
-                {active ? (
+                {active && (
                   <motion.span
                     layoutId="header-active"
-                    className="absolute -bottom-[22px] left-0 h-[2px] w-full bg-[var(--flame)]"
+                    className="absolute -bottom-[22px] left-0 h-[2px] w-full bg-[#c8ff00]"
                   />
-                ) : null}
+                )}
               </Link>
             );
           })}
@@ -77,24 +77,32 @@ export function SiteHeader() {
             <>
               <Link
                 href="/auth/sign-in"
-                className="ui-font border border-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] text-[var(--flame)] transition hover:bg-[var(--flame)] hover:text-black"
+                className={`ui-font px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] transition ${
+                  isHome
+                    ? "border border-white/20 text-black hover:border-black hover:text-black"
+                    : "border border-black/10 text-black hover:border-black hover:text-black"
+                }`}
               >
                 Sign In
               </Link>
               <Link
                 href="/auth/register"
-                className="ui-font bg-[var(--flame)] px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] text-black transition hover:bg-[var(--flame-soft)]"
+                className="ui-font bg-[#c8ff00] px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] text-black transition hover:bg-[#d4ff33]"
               >
-                Register - ₹999
+                Register — ₹999
               </Link>
             </>
           ) : (
             <>
               <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[var(--flame)] to-orange-400 display-font text-sm">
+                <div className="display-font flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c8ff00] to-lime-400 text-sm text-black">
                   {user.initials}
                 </div>
-                <div className="ui-font text-sm uppercase tracking-[0.18em] text-white/70">
+                <div
+                  className={`ui-font text-sm uppercase tracking-[0.18em] ${
+                    isHome ? "text-white/70" : "text-black/70"
+                  }`}
+                >
                   {user.name}
                 </div>
               </div>
@@ -103,7 +111,11 @@ export function SiteHeader() {
                   logout();
                   router.push("/");
                 }}
-                className="ui-font border border-white/15 px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] text-white transition hover:border-[var(--flame)] hover:text-[var(--flame)]"
+                className={`ui-font px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] transition ${
+                  isHome
+                    ? "border border-white/15 text-white hover:border-[#c8ff00] hover:text-[#c8ff00]"
+                    : "border border-black/10 text-black hover:border-[#c8ff00] hover:text-[#7fb800]"
+                }`}
               >
                 Logout
               </button>
