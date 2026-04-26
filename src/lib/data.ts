@@ -89,7 +89,7 @@ export const tickerItems = [
   "Mumbai Mavericks vs Delhi Dynamos — LIVE — Over 7.3 — Mumbai: 89/2",
   "City Trials Begin April 15th, 2026",
   "16 Franchises · National Selections · T10 Format",
-  "Registrations Open — 20+ Cities",
+  "Registrations Open — 100+ Cities",
   "Kolkata Knights beat Pune Warriors by 14 runs",
 ];
 

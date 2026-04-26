@@ -38,7 +38,7 @@ export function Hero() {
             <span>Season 2026 · Registrations Open</span>
           </div>
 
-          <h1 className="display-font text-[clamp(4.6rem,10vw,8.8rem)] uppercase leading-[0.88] tracking-[0.02em] text-white">
+          <h1 className="display-font  text-[clamp(3.8rem,8vw,7.2rem)] uppercase leading-[0.88] tracking-[0.02em] text-white">
             Indian
             <br />
             <span className="text-[#c8ff00]">Tennis</span>
@@ -46,6 +46,8 @@ export function Hero() {
             Cricket
             <br />
             Premier
+            <br />
+            league
           </h1>
 
           {/* <div className="mt-12 grid grid-cols-2 gap-6 border-t border-white/10 pt-8 md:grid-cols-4">
@@ -79,6 +81,17 @@ export function Hero() {
             >
               View Teams
             </Link>
+          </div>
+          <div className="mt-10 max-w-xl">
+            <p className="text-white/75 text-base md:text-lg leading-relaxed">
+              The Indian Tennis Cricket Premier League (ITCPL) is a revolution built to
+              give India’s most loved grassroots sport the stage it deserves.
+            </p>
+
+            <p className="mt-3 text-white/60 text-sm md:text-base leading-relaxed">
+              From local gullies to professional stadiums, we are transforming raw street
+              talent into national icons — <span className="text-[#c8ff00]">Gully se Glory Tak.</span>
+            </p>
           </div>
         </motion.div>
 

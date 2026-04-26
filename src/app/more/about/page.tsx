@@ -17,9 +17,9 @@ export default function AboutPage() {
               </div>
 
               <p className="mt-4 text-sm leading-7 text-black/65">
-                ITCPL is a high-energy Indian tennis cricket platform focused on live
-                scoring, league storytelling, player rankings, franchise visibility,
-                and tournament operations.
+                The Indian Tennis Cricket Premier League (ITCPL) is more than just a tournament; it is a revolution designed to give India’s most popular grassroots sport the cinematic stage it deserves. While the IPL celebrates the leather ball, we celebrate the soul of Indian streets. Our slogan, “Gully se Glory Tak,” perfectly captures our mission: transforming raw, backyard talent into national sporting icons.
+                Tennis cricket is the heartbeat of every Indian neighborhood, yet its heroes often remain unsung. We are changing that by professionalizing the format with international-standard production, massive stadiums, and high-stakes competition. By bridging the gap between local playgrounds and floodlit arenas, we provide a platform where a player’s journey doesn’t end at the neighborhood corner but leads to the spotlight of a national league.
+                This league is a scout’s dream and a player’s ultimate breakthrough. We are hunting for the fastest bowlers, the most audacious hitters, and the sharpest fielders who have honed their skills with a tennis ball. For every kid dreaming of greatness, the ITCPL is the bridge from the dust of the gully to the golden glory of professional cricket. Join us as we turn local legends into household names.
               </p>
             </div>
 
@@ -29,10 +29,10 @@ export default function AboutPage() {
               </div>
 
               <div className="mt-4 space-y-3 text-sm text-black/65">
-                <div>League Commissioner - Amit Deshpande</div>
-                <div>Operations Head - Rohan Vyas</div>
-                <div>Scoring Director - Neeraj Patil</div>
-                <div>Partnerships Lead - Shrey Shah</div>
+                <div>League Commissioner - Sparsh Waghmare</div>
+                <div>Operations Head - XYZ</div>
+                <div>Scoring Director -  XYZ</div>
+                <div>Partnerships Lead - XYZ</div>
               </div>
             </div>
           </div>
