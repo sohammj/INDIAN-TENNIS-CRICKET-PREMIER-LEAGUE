@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
 import { API_URL } from "@/lib/api";
+
 type RankingPlayer = {
   id: string;
   rank: string;
@@ -39,7 +40,7 @@ export default function AdminRankingsPage() {
   useEffect(() => {
     async function fetchRankings() {
       try {
-        const res = await fetch("http://localhost:4000/api/rankings", {
+        const res = await fetch(`${API_URL}/api/rankings`, {
           cache: "no-store",
         });
 

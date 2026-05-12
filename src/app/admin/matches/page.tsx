@@ -97,7 +97,7 @@ export default function AdminMatchesPage() {
       return;
     }
 
-    await fetch("http://localhost:4000/api/matches", {
+    await fetch(`${API_URL}/api/matches`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
