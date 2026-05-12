@@ -13,6 +13,21 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+
+  ignores: [
+
+    "backend/dist/**",
+
+    "backend/node_modules/**",
+
+    ".next/**",
+
+    "node_modules/**",
+
+  ],
+
+},
 ]);
 
 export default eslintConfig;

@@ -23,10 +23,10 @@ export function SiteHeader() {
 
   const navItems = [...publicNav];
 
-  if (user?.role === "player") {
+  if (user?.role === "USER") {
     navItems.push({ label: "Dashboard", href: "/dashboard" });
   }
-  if (user?.role === "admin") {
+  if (user?.role === "ADMIN") {
     navItems.push({ label: "Admin", href: "/admin" });
   }
 
@@ -96,7 +96,13 @@ export function SiteHeader() {
             <>
               <div className="flex items-center gap-3">
                 <div className="display-font flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c8ff00] to-lime-400 text-sm text-black">
-                  {user.initials}
+                  {/* {user.initials} */}
+                  {user.name
+                    .split(" ")
+                    .map((word) => word[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()}
                 </div>
                 <div
                   className={`ui-font text-sm uppercase tracking-[0.18em] ${

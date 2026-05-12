@@ -9,22 +9,22 @@ export default function SignInPage() {
   const router = useRouter();
   const { login } = useAuth();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErr("");
 
-    const result = login(username, password);
+    const result = await login(email, password);
 
     if (!result.ok) {
-      setErr("Invalid username or password.");
+      setErr("Invalid email or password.");
       return;
     }
 
-    if (result.role === "admin") {
+    if (result.role === "ADMIN") {
       router.push("/admin");
     } else {
       router.push("/dashboard");
@@ -35,31 +35,23 @@ export default function SignInPage() {
     <StadiumBg overlay="light">
       <div className="min-h-screen flex flex-col pt-24">
         <div className="flex-1 section-shell flex items-center justify-center py-20">
-          <form
-            onSubmit={handleSubmit}
-            className="glow-card w-full max-w-md space-y-5 p-8"
-          >
+          <form onSubmit={handleSubmit} className="glow-card w-full max-w-md space-y-5 p-8">
             <div>
               <div className="section-label">Secure Access</div>
               <h1 className="section-title">Sign In</h1>
-              <p className="mt-4 text-sm text-black/55">Use mock credentials.</p>
-            </div>
-
-            <div className="rounded-2xl border border-black/10 bg-[#fafaf7] p-4 text-sm text-black/65">
-              <div>
-                <span className="text-[#7fb800]">Admin:</span> admin / admin123
-              </div>
-              <div className="mt-2">
-                <span className="text-[#7fb800]">Player:</span> player / player123
-              </div>
+              <p className="mt-4 text-sm text-black/55">
+                Sign in using your registered email and password.
+              </p>
             </div>
 
             <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              type="email"
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none placeholder:text-black/35"
             />
+
             <input
               value={password}
               onChange={(e) => setPassword(e.target.value)}

@@ -1,78 +1,133 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { creds, UserRole } from "@/lib/data";
 
-type SessionUser = {
-  username: string;
-  role: Exclude<UserRole, "public">;
+type User = {
+  id: string;
   name: string;
-  initials: string;
+  email: string;
+  role: "USER" | "ADMIN" | "SCORER";
+  createdAt?: string;
 };
 
 type AuthContextType = {
-  user: SessionUser | null;
-  login: (username: string, password: string) => { ok: boolean; role?: "player" | "admin" };
+  user: User | null;
+  token: string | null;
+  loading: boolean;
+  login: (email: string, password: string) => Promise<{ ok: boolean; role?: User["role"] }>;
+  register: (name: string, email: string, password: string) => Promise<{ ok: boolean; role?: User["role"] }>;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const STORAGE_KEY = "itcpl-auth-user";
+const USER_KEY = "itcpl-auth-user";
+const TOKEN_KEY = "itcpl-auth-token";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<SessionUser | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const clearSession = () => {
+    setUser(null);
+    setToken(null);
+    window.localStorage.removeItem(USER_KEY);
+    window.localStorage.removeItem(TOKEN_KEY);
+  };
 
   useEffect(() => {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (raw) {
+    async function verifySession() {
+      const storedToken = window.localStorage.getItem(TOKEN_KEY);
+
+      if (!storedToken) {
+        setLoading(false);
+        return;
+      }
+
       try {
-        setUser(JSON.parse(raw));
+        const res = await fetch("http://localhost:4000/api/auth/me", {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
+
+        if (!res.ok) {
+          clearSession();
+          setLoading(false);
+          return;
+        }
+
+        const verifiedUser = await res.json();
+
+        setUser(verifiedUser);
+        setToken(storedToken);
+        window.localStorage.setItem(USER_KEY, JSON.stringify(verifiedUser));
       } catch {
-        window.localStorage.removeItem(STORAGE_KEY);
+        clearSession();
+      } finally {
+        setLoading(false);
       }
     }
+
+    verifySession();
   }, []);
 
-  const login = (username: string, password: string) => {
-    const normalized = username.trim().toLowerCase();
-
-    const matched =
-      normalized === creds.admin.username
-        ? creds.admin
-        : normalized === creds.player.username
-        ? creds.player
-        : null;
-
-    if (!matched || matched.password !== password) {
-      return { ok: false as const };
-    }
-
-    const nextUser: SessionUser = {
-      username: matched.username,
-      role: matched.role,
-      name: matched.name,
-      initials: matched.initials,
-    };
-
+  const saveSession = (nextUser: User, nextToken: string) => {
     setUser(nextUser);
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser));
+    setToken(nextToken);
+    window.localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
+    window.localStorage.setItem(TOKEN_KEY, nextToken);
+  };
 
-    return { ok: true as const, role: matched.role };
+  const login = async (email: string, password: string) => {
+    const res = await fetch("http://localhost:4000/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) return { ok: false };
+
+    const data = await res.json();
+    saveSession(data.user, data.token);
+
+    return { ok: true, role: data.user.role };
+  };
+
+  const register = async (name: string, email: string, password: string) => {
+    const res = await fetch("http://localhost:4000/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    if (!res.ok) return { ok: false };
+
+    const data = await res.json();
+    saveSession(data.user, data.token);
+
+    return { ok: true, role: data.user.role };
   };
 
   const logout = () => {
-    setUser(null);
-    window.localStorage.removeItem(STORAGE_KEY);
+    clearSession();
   };
 
   const value = useMemo(
     () => ({
       user,
+      token,
+      loading,
       login,
+      register,
       logout,
     }),
-    [user]
+    [user, token, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -80,8 +135,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
+
   if (!ctx) {
     throw new Error("useAuth must be used inside AuthProvider");
   }
+
   return ctx;
 }

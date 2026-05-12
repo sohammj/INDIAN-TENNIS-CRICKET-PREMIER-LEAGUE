@@ -1,25 +1,74 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { rankings } from "@/lib/data";
+import { useEffect, useMemo, useState } from "react";
 import { StadiumBg } from "@/components/ui/stadium-bg";
+
+type ApiRanking = {
+  id: string;
+  playerId: string;
+  name: string;
+  city: string;
+  zone: string;
+  points: number;
+  createdAt: string;
+};
 
 export default function RankingsPage() {
   const [zone, setZone] = useState("All");
   const [query, setQuery] = useState("");
+  const [rankings, setRankings] = useState<ApiRanking[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchRankings() {
+      try {
+        const res = await fetch("http://localhost:4000/api/rankings");
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch rankings");
+        }
+
+        const data = await res.json();
+
+        const sorted = [...data].sort(
+          (a, b) => b.points - a.points
+        );
+
+        setRankings(sorted);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchRankings();
+  }, []);
 
   const filtered = useMemo(() => {
     return rankings.filter((player) => {
       const zoneOk = zone === "All" || player.zone === zone;
+
       const q = query.toLowerCase();
+
       const searchOk =
         !q ||
         player.name.toLowerCase().includes(q) ||
         player.playerId.toLowerCase().includes(q) ||
         player.city.toLowerCase().includes(q);
+
       return zoneOk && searchOk;
     });
-  }, [zone, query]);
+  }, [zone, query, rankings]);
+
+  function getInitials(name: string) {
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }
 
   return (
     <StadiumBg overlay="light">
@@ -64,9 +113,6 @@ export default function RankingsPage() {
                     "Player ID",
                     "Zone",
                     "City",
-                    "Matches",
-                    "Runs",
-                    "Wickets",
                     "Points",
                   ].map((head) => (
                     <th
@@ -80,58 +126,70 @@ export default function RankingsPage() {
               </thead>
 
               <tbody>
-                {filtered.map((player) => (
-                  <tr
-                    key={player.playerId}
-                    className="border-b border-black/10 hover:bg-[#c8ff00]/[0.08]"
-                  >
-                    <td className="display-font px-4 py-4 text-3xl text-black">
-                      {player.rank}
-                    </td>
-
-                    <td className="px-4 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white"
-                          style={{ background: player.gradient }}
-                        >
-                          {player.initials}
-                        </div>
-
-                        <div>
-                          <div className="ui-font text-sm font-bold uppercase text-black">
-                            {player.name}
-                          </div>
-                          <div className="mono-font mt-1 text-[10px] uppercase tracking-[0.16em] text-black/40">
-                            Elite Performer
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="mono-font px-4 py-4 text-sm text-black/55">
-                      {player.playerId}
-                    </td>
-                    <td className="mono-font px-4 py-4 text-sm text-[#7fb800]">
-                      {player.zone}
-                    </td>
-                    <td className="mono-font px-4 py-4 text-sm text-black/55">
-                      {player.city}
-                    </td>
-                    <td className="mono-font px-4 py-4 text-sm text-black/55">
-                      {player.matches}
-                    </td>
-                    <td className="mono-font px-4 py-4 text-sm text-black/55">
-                      {player.runs}
-                    </td>
-                    <td className="mono-font px-4 py-4 text-sm text-black/55">
-                      {player.wickets}
-                    </td>
-                    <td className="display-font px-4 py-4 text-2xl text-[#7fb800]">
-                      {player.points}
+                {loading ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-4 py-10 text-center text-black/50"
+                    >
+                      Loading rankings...
                     </td>
                   </tr>
-                ))}
+                ) : filtered.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={6}
+                      className="px-4 py-10 text-center text-black/50"
+                    >
+                      No players found
+                    </td>
+                  </tr>
+                ) : (
+                  filtered.map((player, index) => (
+                    <tr
+                      key={player.id}
+                      className="border-b border-black/10 hover:bg-[#c8ff00]/[0.08]"
+                    >
+                      <td className="display-font px-4 py-4 text-3xl text-black">
+                        #{index + 1}
+                      </td>
+
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#c8ff00] text-sm font-bold text-black">
+                            {getInitials(player.name)}
+                          </div>
+
+                          <div>
+                            <div className="ui-font text-sm font-bold uppercase text-black">
+                              {player.name}
+                            </div>
+
+                            <div className="mono-font mt-1 text-[10px] uppercase tracking-[0.16em] text-black/40">
+                              Elite Performer
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      <td className="mono-font px-4 py-4 text-sm text-black/55">
+                        {player.playerId}
+                      </td>
+
+                      <td className="mono-font px-4 py-4 text-sm text-[#7fb800]">
+                        {player.zone}
+                      </td>
+
+                      <td className="mono-font px-4 py-4 text-sm text-black/55">
+                        {player.city}
+                      </td>
+
+                      <td className="display-font px-4 py-4 text-2xl text-[#7fb800]">
+                        {player.points}
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

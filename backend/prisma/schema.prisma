@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SCORER
+}
+
+enum MatchStatus {
+  UPCOMING
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum TournamentStatus {
+  UPCOMING
+  OPEN
+  CLOSED
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum TournamentRegistrationStatus {
+  REGISTERED
+  WAITLISTED
+  CANCELLED
+}
+
+enum TeamPlayerStatus {
+  ACTIVE
+  INACTIVE
+  RELEASED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  playerProfile PlayerProfile?
+  payments       Payment[]
+}
+
+model PlayerProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  playerId  String   @unique
+  name      String
+  phone     String?
+  city      String?
+  zone      String?
+  address   String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  user          User                     @relation(fields: [userId], references: [id])
+  teamLinks     TeamPlayer[]
+  matchStats    MatchPlayerStat[]
+  registrations TournamentRegistration[]
+  payments      Payment[]
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  city      String?
+  zone      String?
+  logoUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  homeMatches Match[]      @relation("TeamA")
+  awayMatches Match[]      @relation("TeamB")
+  players     TeamPlayer[]
+}
+
+model TeamPlayer {
+  id        String           @id @default(cuid())
+  teamId    String
+  playerId  String
+  role      String?
+  status    TeamPlayerStatus @default(ACTIVE)
+  joinedAt  DateTime         @default(now())
+
+  team   Team          @relation(fields: [teamId], references: [id])
+  player PlayerProfile @relation(fields: [playerId], references: [id])
+
+  @@unique([teamId, playerId])
+}
+
+model Tournament {
+  id          String           @id @default(cuid())
+  name        String
+  city        String?
+  zone        String?
+  startDate   DateTime?
+  endDate     DateTime?
+  entryFee    Int?
+  status      TournamentStatus @default(UPCOMING)
+  createdAt   DateTime         @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  matches       Match[]
+  registrations TournamentRegistration[]
+  payments      Payment[]
+}
+
+model TournamentRegistration {
+  id           String                       @id @default(cuid())
+  tournamentId String
+  playerId     String
+  status       TournamentRegistrationStatus @default(REGISTERED)
+  createdAt    DateTime                     @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  tournament Tournament    @relation(fields: [tournamentId], references: [id])
+  player     PlayerProfile @relation(fields: [playerId], references: [id])
+  payment    Payment?
+
+  @@unique([tournamentId, playerId])
+}
+
+model Match {
+  id           String      @id @default(cuid())
+  tournamentId String?
+  teamAId      String
+  teamBId      String
+  venue        String?
+  matchDate    DateTime?
+  status       MatchStatus @default(UPCOMING)
+  summary      String?
+  createdAt    DateTime    @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  tournament Tournament?       @relation(fields: [tournamentId], references: [id])
+  teamA      Team              @relation("TeamA", fields: [teamAId], references: [id])
+  teamB      Team              @relation("TeamB", fields: [teamBId], references: [id])
+  playerStats MatchPlayerStat[]
+}
+
+model MatchPlayerStat {
+  id       String @id @default(cuid())
+  matchId  String
+  playerId String
+
+  runs       Int @default(0)
+  ballsFaced Int @default(0)
+  fours      Int @default(0)
+  sixes      Int @default(0)
+  innings    Int @default(0)
+  notOuts    Int @default(0)
+
+  oversBowled  Float @default(0)
+  maidens      Int   @default(0)
+  runsConceded Int   @default(0)
+  wickets      Int   @default(0)
+  dotBalls     Int   @default(0)
+
+  catches Int @default(0)
+  runOuts Int @default(0)
+
+  captaincyMatches Int @default(0)
+  mvpPoints        Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  match  Match         @relation(fields: [matchId], references: [id])
+  player PlayerProfile @relation(fields: [playerId], references: [id])
+
+  @@unique([matchId, playerId])
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  userId         String
+  playerId       String?
+  tournamentId   String?
+  registrationId String?       @unique
+  amount         Int
+  currency       String        @default("INR")
+  status         PaymentStatus @default(PENDING)
+  provider       String        @default("RAZORPAY")
+  providerRef    String?
+  createdAt      DateTime      @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  user         User                    @relation(fields: [userId], references: [id])
+  player       PlayerProfile?          @relation(fields: [playerId], references: [id])
+  tournament   Tournament?             @relation(fields: [tournamentId], references: [id])
+  registration TournamentRegistration? @relation(fields: [registrationId], references: [id])
+}

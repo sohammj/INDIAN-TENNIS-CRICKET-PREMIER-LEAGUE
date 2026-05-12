@@ -1,49 +1,141 @@
-import { AdminSidebar } from "@/components/layout/admin-sidebar";
+"use client";
 
-const payments = [
-  { id: "PAY-001", player: "Rohit Kadam", amount: "₹999", method: "Razorpay", status: "Paid" },
-  { id: "PAY-002", player: "Arjun Varma", amount: "₹999", method: "Razorpay", status: "Pending" },
-  { id: "PAY-003", player: "Suresh Kumar", amount: "₹1499", method: "UPI", status: "Paid" },
-];
+import { useEffect, useState } from "react";
+import { AdminSidebar } from "@/components/layout/admin-sidebar";
+import { AdminGuard } from "@/components/providers/admin-guard";
+import { useAuth } from "@/components/providers/auth-provider";
+
+type Payment = {
+  id: string;
+  amount: number;
+  currency: string;
+  status: "PENDING" | "COMPLETED" | "FAILED" | "REFUNDED";
+  provider: string;
+  providerRef: string | null;
+  createdAt: string;
+  user: {
+    name: string;
+    email: string;
+  };
+  player: {
+    name: string;
+    playerId: string;
+  } | null;
+  tournament: {
+    name: string;
+  } | null;
+};
 
 export default function AdminPaymentsPage() {
-  return (
-    <div className="min-h-[calc(100vh-4rem)] bg-white">
-      <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
-        <AdminSidebar />
-        <main className="p-8 lg:p-10">
-          <div className="section-label">Admin Module</div>
-          <h1 className="section-title">Payments</h1>
+  const { token, loading } = useAuth();
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [pageLoading, setPageLoading] = useState(true);
 
-          <div className="mt-10 overflow-x-auto glow-card p-4">
-            <table className="w-full min-w-[760px] border-collapse">
-              <thead>
-                <tr className="border-b border-black/10">
-                  {["Transaction ID", "Player", "Amount", "Method", "Status"].map((head) => (
-                    <th
-                      key={head}
-                      className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-black/40"
-                    >
-                      {head}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {payments.map((row) => (
-                  <tr key={row.id} className="border-b border-black/10">
-                    <td className="px-4 py-4 text-sm text-black">{row.id}</td>
-                    <td className="px-4 py-4 text-sm text-black/70">{row.player}</td>
-                    <td className="px-4 py-4 text-sm text-black/70">{row.amount}</td>
-                    <td className="px-4 py-4 text-sm text-black/70">{row.method}</td>
-                    <td className="px-4 py-4 text-sm text-[#7fb800]">{row.status}</td>
+  useEffect(() => {
+    if (loading || !token) return;
+
+    async function fetchPayments() {
+      try {
+        const res = await fetch("http://localhost:4000/api/admin/payments", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        setPayments(data);
+      } finally {
+        setPageLoading(false);
+      }
+    }
+
+    fetchPayments();
+  }, [token, loading]);
+
+  return (
+    <AdminGuard>
+      <div className="min-h-[calc(100vh-4rem)] bg-white">
+        <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
+          <AdminSidebar />
+
+          <main className="p-8 lg:p-10">
+            <div className="section-label">Admin Module</div>
+            <h1 className="section-title">Payments</h1>
+
+            <div className="mt-10 overflow-x-auto glow-card p-4">
+              <table className="w-full min-w-[980px] border-collapse">
+                <thead>
+                  <tr className="border-b border-black/10">
+                    {[
+                      "Transaction ID",
+                      "User",
+                      "Player",
+                      "Tournament",
+                      "Amount",
+                      "Method",
+                      "Status",
+                      "Date",
+                    ].map((head) => (
+                      <th
+                        key={head}
+                        className="mono-font px-4 py-4 text-left text-xs uppercase tracking-[0.22em] text-black/40"
+                      >
+                        {head}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </main>
+                </thead>
+
+                <tbody>
+                  {pageLoading ? (
+                    <tr>
+                      <td colSpan={8} className="px-4 py-8 text-sm text-black/50">
+                        Loading payments...
+                      </td>
+                    </tr>
+                  ) : payments.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="px-4 py-8 text-sm text-black/50">
+                        No payment records found.
+                      </td>
+                    </tr>
+                  ) : (
+                    payments.map((row) => (
+                      <tr key={row.id} className="border-b border-black/10">
+                        <td className="px-4 py-4 text-sm text-black">
+                          {row.providerRef || row.id}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/70">
+                          {row.user.name}
+                          <div className="text-xs text-black/40">{row.user.email}</div>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/70">
+                          {row.player?.name || "—"}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/70">
+                          {row.tournament?.name || "—"}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/70">
+                          ₹{row.amount}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/70">
+                          {row.provider}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-[#7fb800]">
+                          {row.status}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black/60">
+                          {new Date(row.createdAt).toLocaleDateString("en-IN")}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </AdminGuard>
   );
 }
