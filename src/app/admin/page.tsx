@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminGuard } from "@/components/providers/admin-guard";
 import { useAuth } from "@/components/providers/auth-provider";
+import { API_URL } from "@/lib/api";
 
 const adminNav = [
   { label: "Dashboard", href: "/admin" },
@@ -78,7 +79,7 @@ export default function AdminPage() {
 
     async function fetchOverview() {
       try {
-        const res = await fetch("http://localhost:4000/api/admin/overview", {
+        const res = await fetch(`${API_URL}/api/admin/overview`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

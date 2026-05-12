@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { StadiumBg } from "@/components/ui/stadium-bg";
+import { API_URL } from "@/lib/api";
 
 type ApiTeam = {
   id: string;
@@ -31,7 +32,7 @@ type ApiMatch = {
 };
 
 async function getMatches(): Promise<ApiMatch[]> {
-  const res = await fetch("http://localhost:4000/api/matches", {
+  const res = await fetch(`${API_URL}/api/matches`, {
     cache: "no-store",
   });
 

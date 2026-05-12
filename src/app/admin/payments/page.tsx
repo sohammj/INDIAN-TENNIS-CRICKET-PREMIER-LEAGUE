@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
 import { useAuth } from "@/components/providers/auth-provider";
+import { API_URL } from "@/lib/api";
 
 type Payment = {
   id: string;
@@ -36,7 +37,7 @@ export default function AdminPaymentsPage() {
 
     async function fetchPayments() {
       try {
-        const res = await fetch("http://localhost:4000/api/admin/payments", {
+        const res = await fetch(`${API_URL}/api/admin/payments`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
 import { useAuth } from "@/components/providers/auth-provider";
+import { API_URL } from "@/lib/api";
 
 type AdminUser = {
   id: string;
@@ -30,7 +31,7 @@ export default function AdminUsersPage() {
 
     async function fetchUsers() {
       try {
-        const res = await fetch("http://localhost:4000/api/admin/users", {
+        const res = await fetch(`${API_URL}/api/admin/users`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

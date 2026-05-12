@@ -1,4 +1,5 @@
 import { StadiumBg } from "@/components/ui/stadium-bg";
+import { API_URL } from "@/lib/api";
 
 type ApiTeam = {
   id: string;
@@ -10,7 +11,7 @@ type ApiTeam = {
 };
 
 async function getTeams(): Promise<ApiTeam[]> {
-  const res = await fetch("http://localhost:4000/api/teams", {
+  const res = await fetch(`${API_URL}/api/teams`, {
     cache: "no-store",
   });
 

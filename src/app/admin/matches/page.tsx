@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
+import { API_URL } from "@/lib/api";
 
 type Team = {
   id: string;
@@ -60,9 +61,9 @@ export default function AdminMatchesPage() {
   async function fetchData() {
     try {
       const [matchesRes, teamsRes, tournamentsRes] = await Promise.all([
-        fetch("http://localhost:4000/api/matches", { cache: "no-store" }),
-        fetch("http://localhost:4000/api/teams", { cache: "no-store" }),
-        fetch("http://localhost:4000/api/tournaments", { cache: "no-store" }),
+        fetch(`${API_URL}/api/matches`, { cache: "no-store" }),
+        fetch(`${API_URL}/api/teams`, { cache: "no-store" }),
+        fetch(`${API_URL}/api/tournaments`, { cache: "no-store" }),
       ]);
 
       const [matchesData, teamsData, tournamentsData] = await Promise.all([

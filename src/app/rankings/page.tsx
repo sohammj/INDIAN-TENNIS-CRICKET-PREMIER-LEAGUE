@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { StadiumBg } from "@/components/ui/stadium-bg";
+import { API_URL } from "@/lib/api";
 
 type ApiRanking = {
   id: string;
@@ -22,7 +23,7 @@ export default function RankingsPage() {
   useEffect(() => {
     async function fetchRankings() {
       try {
-        const res = await fetch("http://localhost:4000/api/rankings");
+        const res = await fetch(`${API_URL}/api/rankings`);
 
         if (!res.ok) {
           throw new Error("Failed to fetch rankings");

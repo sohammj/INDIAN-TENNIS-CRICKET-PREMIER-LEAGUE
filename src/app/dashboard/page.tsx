@@ -6,6 +6,7 @@ import { discoverTournaments } from "@/lib/data";
 import { PaymentModal } from "@/components/ui/payment-modal";
 import { StadiumBg } from "@/components/ui/stadium-bg";
 import { useAuth } from "@/components/providers/auth-provider";
+import { API_URL } from "@/lib/api";
 
 type DashboardData = {
   user: {
@@ -116,7 +117,7 @@ export default function DashboardPage() {
 
     async function fetchDashboard() {
       try {
-        const res = await fetch("http://localhost:4000/api/dashboard/me", {
+        const res = await fetch(`${API_URL}/api/dashboard/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

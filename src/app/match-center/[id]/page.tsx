@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { StadiumBg } from "@/components/ui/stadium-bg";
 
+import { API_URL } from "@/lib/api";
+
 type ApiTeam = {
   id: string;
   name: string;
@@ -30,7 +32,7 @@ type ApiMatch = {
 };
 
 async function getMatch(id: string): Promise<ApiMatch | null> {
-  const res = await fetch(`http://localhost:4000/api/matches/${id}`, {
+  const res = await fetch(`${API_URL}/api/matches/${id}`, {
     cache: "no-store",
   });
 

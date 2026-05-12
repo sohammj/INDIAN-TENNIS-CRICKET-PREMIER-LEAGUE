@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
 import { useAuth } from "@/components/providers/auth-provider";
+import { API_URL } from "@/lib/api";
+
 
 type TeamPlayerLink = {
   id: string;
@@ -68,10 +70,10 @@ export default function AdminTeamsPlayersPage() {
   async function fetchData() {
     try {
       const [teamsRes, playersRes] = await Promise.all([
-        fetch("http://localhost:4000/api/teams", {
+        fetch(`${API_URL}/api/teams`, {
           cache: "no-store",
         }),
-        fetch("http://localhost:4000/api/players", {
+        fetch(`${API_URL}/api/players`, {
           cache: "no-store",
         }),
       ]);
@@ -132,7 +134,7 @@ export default function AdminTeamsPlayersPage() {
     };
 
     if (editingTeamId) {
-      await fetch(`http://localhost:4000/api/teams/${editingTeamId}`, {
+      await fetch(`${API_URL}/api/teams/${editingTeamId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +142,7 @@ export default function AdminTeamsPlayersPage() {
         body: JSON.stringify(payload),
       });
     } else {
-      await fetch("http://localhost:4000/api/teams", {
+      await fetch(`${API_URL}/api/teams`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -158,7 +160,7 @@ export default function AdminTeamsPlayersPage() {
 
     if (!confirmed) return;
 
-    await fetch(`http://localhost:4000/api/teams/${teamId}`, {
+    await fetch(`${API_URL}/api/teams/${teamId}`, {
       method: "DELETE",
     });
 
@@ -178,7 +180,7 @@ export default function AdminTeamsPlayersPage() {
       return;
     }
 
-    const res = await fetch(`http://localhost:4000/api/teams/${teamId}/players`, {
+    const res = await fetch(`${API_URL}/api/teams/${teamId}/players`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -218,7 +220,7 @@ export default function AdminTeamsPlayersPage() {
     if (!confirmed) return;
 
     const res = await fetch(
-      `http://localhost:4000/api/teams/${teamId}/players/${linkId}`,
+      `${API_URL}/api/teams/${teamId}/players/${linkId}`,
       {
         method: "DELETE",
         headers: {

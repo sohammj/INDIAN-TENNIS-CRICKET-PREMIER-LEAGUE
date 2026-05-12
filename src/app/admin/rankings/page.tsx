@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { AdminGuard } from "@/components/providers/admin-guard";
-
+import { API_URL } from "@/lib/api";
 type RankingPlayer = {
   id: string;
   rank: string;
