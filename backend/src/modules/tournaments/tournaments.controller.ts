@@ -4,65 +4,69 @@ import {
   createTournamentSchema,
   updateTournamentSchema,
 } from "./tournaments.validators";
-import { getParam } from "../../utils/http";
+import { getParam, handleControllerError, validateBody } from "../../utils/http";
 
 export const tournamentsController = {
   async create(req: Request, res: Response) {
-    const parsed = createTournamentSchema.safeParse(req.body);
+    try {
+      const body = validateBody(createTournamentSchema, req.body);
+      const tournament = await tournamentsService.create(body);
 
-    if (!parsed.success) {
-      return res.status(400).json({
-        message: "Invalid tournament data",
-        errors: parsed.error.flatten(),
-      });
+      return res.status(201).json(tournament);
+    } catch (error) {
+      return handleControllerError(res, error, "Failed to create tournament.");
     }
-
-    const tournament = await tournamentsService.create(parsed.data);
-
-    return res.status(201).json(tournament);
   },
 
   async findAll(_req: Request, res: Response) {
-    const tournaments = await tournamentsService.findAll();
-
-    return res.json(tournaments);
+    try {
+      const tournaments = await tournamentsService.findAll();
+      return res.json(tournaments);
+    } catch (error) {
+      return handleControllerError(res, error, "Failed to fetch tournaments.");
+    }
   },
 
   async findById(req: Request, res: Response) {
-    const tournament = await tournamentsService.findById(getParam(req.params.id, "id"));
+    try {
+      const id = getParam(req.params.id, "id");
+      const tournament = await tournamentsService.findById(id);
 
-    if (!tournament) {
-      return res.status(404).json({
-        message: "Tournament not found",
-      });
+      if (!tournament) {
+        return res.status(404).json({
+          message: "Tournament not found",
+        });
+      }
+
+      return res.json(tournament);
+    } catch (error) {
+      return handleControllerError(res, error, "Failed to fetch tournament.");
     }
-
-    return res.json(tournament);
   },
 
   async update(req: Request, res: Response) {
-    const parsed = updateTournamentSchema.safeParse(req.body);
+    try {
+      const id = getParam(req.params.id, "id");
+      const body = validateBody(updateTournamentSchema, req.body);
 
-    if (!parsed.success) {
-      return res.status(400).json({
-        message: "Invalid tournament data",
-        errors: parsed.error.flatten(),
-      });
+      const tournament = await tournamentsService.update(id, body);
+
+      return res.json(tournament);
+    } catch (error) {
+      return handleControllerError(res, error, "Failed to update tournament.");
     }
-
-    const tournament = await tournamentsService.update(
-      getParam(req.params.id, "id"),
-      parsed.data
-    );
-
-    return res.json(tournament);
   },
 
   async delete(req: Request, res: Response) {
-    await tournamentsService.delete(getParam(req.params.id, "id"));
+    try {
+      const id = getParam(req.params.id, "id");
+      await tournamentsService.delete(id);
 
-    return res.json({
-      message: "Tournament deleted successfully",
-    });
+      return res.json({
+        message: "Tournament deleted successfully",
+      });
+    } catch (error) {
+      return handleControllerError(res, error, "Failed to delete tournament.");
+    }
   },
 };

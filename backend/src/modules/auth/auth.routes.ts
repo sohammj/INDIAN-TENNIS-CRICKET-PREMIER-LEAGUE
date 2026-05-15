@@ -1,12 +1,15 @@
 import { Router } from "express";
-
-import { login, me, register } from "./auth.controller";
+import { csrf, login, logout, me, refresh, register } from "./auth.controller";
 import { protect } from "../../middleware/auth.middleware";
+import { authRateLimit } from "../../middleware/rateLimit.middleware";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+router.get("/csrf", csrf);
+router.post("/register", authRateLimit, register);
+router.post("/login", authRateLimit, login);
+router.post("/refresh", authRateLimit, refresh);
+router.post("/logout", logout);
 router.get("/me", protect, me);
 
 export default router;

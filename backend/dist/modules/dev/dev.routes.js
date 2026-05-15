@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const dev_controller_1 = require("./dev.controller");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const admin_middleware_1 = require("../../middleware/admin.middleware");
+const rateLimit_middleware_1 = require("../../middleware/rateLimit.middleware");
+const router = (0, express_1.Router)();
+router.post("/seed", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, dev_controller_1.seed);
+exports.default = router;

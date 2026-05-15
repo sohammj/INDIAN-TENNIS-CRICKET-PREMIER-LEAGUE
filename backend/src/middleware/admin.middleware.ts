@@ -1,22 +1,4 @@
-import { Response, NextFunction } from "express";
-import { AuthRequest } from "./auth.middleware";
+import { requireRoles } from "./auth.middleware";
 
-export function requireAdmin(
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) {
-  if (!req.user) {
-    return res.status(401).json({
-      message: "Unauthorized",
-    });
-  }
-
-  if (req.user.role !== "ADMIN") {
-    return res.status(403).json({
-      message: "Admin access required",
-    });
-  }
-
-  return next();
-}
+export const requireAdmin = requireRoles("ADMIN");
+export const requireAdminOrScorer = requireRoles("ADMIN", "SCORER");

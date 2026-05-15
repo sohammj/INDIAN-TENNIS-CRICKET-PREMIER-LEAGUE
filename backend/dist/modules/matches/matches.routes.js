@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const matches_controller_1 = require("./matches.controller");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const admin_middleware_1 = require("../../middleware/admin.middleware");
+const rateLimit_middleware_1 = require("../../middleware/rateLimit.middleware");
+const router = (0, express_1.Router)();
+router.get("/", matches_controller_1.matchesController.findAll);
+router.get("/:id", matches_controller_1.matchesController.findById);
+router.post("/", auth_middleware_1.protect, admin_middleware_1.requireAdminOrScorer, rateLimit_middleware_1.writeRateLimit, matches_controller_1.matchesController.create);
+router.patch("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdminOrScorer, rateLimit_middleware_1.writeRateLimit, matches_controller_1.matchesController.update);
+router.delete("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdminOrScorer, rateLimit_middleware_1.writeRateLimit, matches_controller_1.matchesController.delete);
+exports.default = router;

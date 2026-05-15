@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
-import { AdminGuard } from "@/components/providers/admin-guard";
 import { useAuth } from "@/components/providers/auth-provider";
 import { API_URL } from "@/lib/api";
 
@@ -54,7 +53,6 @@ export default function AdminPaymentsPage() {
   }, [token, loading]);
 
   return (
-    <AdminGuard>
       <div className="min-h-[calc(100vh-4rem)] bg-white">
         <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
           <AdminSidebar />
@@ -137,6 +135,5 @@ export default function AdminPaymentsPage() {
           </main>
         </div>
       </div>
-    </AdminGuard>
   );
 }

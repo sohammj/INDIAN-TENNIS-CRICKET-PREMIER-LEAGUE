@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AdminGuard } from "@/components/providers/admin-guard";
+
 import { useAuth } from "@/components/providers/auth-provider";
 import { API_URL } from "@/lib/api";
 
@@ -110,7 +110,6 @@ export default function AdminPage() {
     : [];
 
   return (
-    <AdminGuard>
       <div className="min-h-[calc(100vh-4rem)] bg-white">
         <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
           <aside className="border-r border-black/10 bg-[#fafaf7] p-6">
@@ -323,6 +322,5 @@ export default function AdminPage() {
           </main>
         </div>
       </div>
-    </AdminGuard>
   );
 }

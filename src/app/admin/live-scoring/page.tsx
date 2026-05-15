@@ -1,9 +1,8 @@
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
-import { AdminGuard } from "@/components/providers/admin-guard";
+
 
 export default function AdminLiveScoringPage() {
   return (
-    <AdminGuard>
       <div className="min-h-[calc(100vh-4rem)] bg-white">
         <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
           <AdminSidebar />
@@ -47,6 +46,5 @@ export default function AdminLiveScoringPage() {
           </main>
         </div>
       </div>
-    </AdminGuard>
   );
 }

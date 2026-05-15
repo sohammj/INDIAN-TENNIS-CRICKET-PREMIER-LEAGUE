@@ -1,4 +1,5 @@
 import { prisma } from "../../config/prisma";
+import { sanitizeOptionalString, sanitizeString } from "../../utils/http";
 
 export const tournamentsService = {
   create(data: {
@@ -6,7 +7,13 @@ export const tournamentsService = {
     city?: string;
     zone?: string;
   }) {
-    return prisma.tournament.create({ data });
+    return prisma.tournament.create({
+      data: {
+        name: sanitizeString(data.name),
+        city: sanitizeOptionalString(data.city),
+        zone: sanitizeOptionalString(data.zone),
+      },
+    });
   },
 
   findAll() {
@@ -21,14 +28,21 @@ export const tournamentsService = {
     });
   },
 
-  update(id: string, data: {
-    name?: string;
-    city?: string;
-    zone?: string;
-  }) {
+  update(
+    id: string,
+    data: {
+      name?: string;
+      city?: string;
+      zone?: string;
+    }
+  ) {
     return prisma.tournament.update({
       where: { id },
-      data,
+      data: {
+        name: data.name ? sanitizeString(data.name) : undefined,
+        city: sanitizeOptionalString(data.city),
+        zone: sanitizeOptionalString(data.zone),
+      },
     });
   },
 

@@ -1,0 +1,16 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const teams_controller_1 = require("./teams.controller");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const admin_middleware_1 = require("../../middleware/admin.middleware");
+const rateLimit_middleware_1 = require("../../middleware/rateLimit.middleware");
+const router = (0, express_1.Router)();
+router.get("/", teams_controller_1.teamsController.findAll);
+router.get("/:id", teams_controller_1.teamsController.findById);
+router.post("/", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, teams_controller_1.teamsController.create);
+router.patch("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, teams_controller_1.teamsController.update);
+router.delete("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, teams_controller_1.teamsController.delete);
+router.post("/:teamId/players", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, teams_controller_1.teamsController.assignPlayer);
+router.delete("/:teamId/players/:linkId", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, teams_controller_1.teamsController.removePlayer);
+exports.default = router;

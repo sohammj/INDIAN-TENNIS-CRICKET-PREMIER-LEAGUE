@@ -1,13 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/components/providers/auth-provider";
 import { StadiumBg } from "@/components/ui/stadium-bg";
 
+function isSafeRedirect(path: string | null) {
+  return !!path && path.startsWith("/") && !path.startsWith("//");
+}
+
 export default function SignInPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login } = useAuth();
+
+  const redirect = searchParams.get("redirect");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,10 +31,17 @@ export default function SignInPage() {
       return;
     }
 
+    const safeRedirect = isSafeRedirect(redirect) ? redirect : null;
+
+    if (safeRedirect) {
+      router.replace(safeRedirect);
+      return;
+    }
+
     if (result.role === "ADMIN") {
-      router.push("/admin");
+      router.replace("/admin");
     } else {
-      router.push("/dashboard");
+      router.replace("/dashboard");
     }
   };
 
@@ -35,7 +49,10 @@ export default function SignInPage() {
     <StadiumBg overlay="light">
       <div className="min-h-screen flex flex-col pt-24">
         <div className="flex-1 section-shell flex items-center justify-center py-20">
-          <form onSubmit={handleSubmit} className="glow-card w-full max-w-md space-y-5 p-8">
+          <form
+            onSubmit={handleSubmit}
+            className="glow-card w-full max-w-md space-y-5 p-8"
+          >
             <div>
               <div className="section-label">Secure Access</div>
               <h1 className="section-title">Sign In</h1>
@@ -49,6 +66,7 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
               type="email"
+              autoComplete="email"
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none placeholder:text-black/35"
             />
 
@@ -57,6 +75,7 @@ export default function SignInPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               type="password"
+              autoComplete="current-password"
               className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none placeholder:text-black/35"
             />
 

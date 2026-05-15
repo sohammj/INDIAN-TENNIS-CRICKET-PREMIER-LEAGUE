@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
-import { AdminGuard } from "@/components/providers/admin-guard";
+import { useAuth } from "@/components/providers/auth-provider";
 import { API_URL } from "@/lib/api";
 
 type Team = {
@@ -43,6 +43,8 @@ function formatDate(date: string | null) {
 }
 
 export default function AdminMatchesPage() {
+  const { token } = useAuth();
+
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -87,6 +89,11 @@ export default function AdminMatchesPage() {
   async function handleCreateMatch(e: React.FormEvent) {
     e.preventDefault();
 
+    if (!token) {
+      alert("Admin session missing. Please login again.");
+      return;
+    }
+
     if (!form.teamAId || !form.teamBId) {
       alert("Select both teams.");
       return;
@@ -97,10 +104,11 @@ export default function AdminMatchesPage() {
       return;
     }
 
-    await fetch(`${API_URL}/api/matches`, {
+    const res = await fetch(`${API_URL}/api/matches`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         tournamentId: form.tournamentId || undefined,
@@ -113,6 +121,12 @@ export default function AdminMatchesPage() {
         status: form.status,
       }),
     });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => null);
+      alert(error?.message || "Failed to create match.");
+      return;
+    }
 
     setForm({
       tournamentId: "",
@@ -128,168 +142,150 @@ export default function AdminMatchesPage() {
   }
 
   return (
-    <AdminGuard>
-      <div className="min-h-[calc(100vh-4rem)] bg-white">
-        <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
-          <AdminSidebar />
+    <div className="min-h-[calc(100vh-4rem)] bg-white">
+      <div className="grid min-h-[calc(100vh-4rem)] lg:grid-cols-[260px_1fr]">
+        <AdminSidebar />
 
-          <main className="p-8 lg:p-10">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <div className="section-label">Admin Module</div>
-                <h1 className="section-title">Match Management</h1>
-              </div>
-
-              <button
-                onClick={() => setShowCreate((prev) => !prev)}
-                className="ui-font rounded-full bg-[#c8ff00] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-black"
-              >
-                {showCreate ? "Close Form" : "Create New Match"}
-              </button>
+        <main className="p-8 lg:p-10">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="section-label">Admin Module</div>
+              <h1 className="section-title">Match Management</h1>
             </div>
 
-            {showCreate ? (
-              <form
-                onSubmit={handleCreateMatch}
-                className="glow-card mt-10 grid gap-4 p-6 md:grid-cols-2"
+            <button
+              onClick={() => setShowCreate((prev) => !prev)}
+              className="ui-font rounded-full bg-[#c8ff00] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-black"
+            >
+              {showCreate ? "Close Form" : "Create New Match"}
+            </button>
+          </div>
+
+          {showCreate ? (
+            <form
+              onSubmit={handleCreateMatch}
+              className="glow-card mt-10 grid gap-4 p-6 md:grid-cols-2"
+            >
+              <select
+                value={form.tournamentId}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, tournamentId: e.target.value }))
+                }
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
               >
-                <select
-                  value={form.tournamentId}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      tournamentId: e.target.value,
-                    }))
-                  }
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
-                >
-                  <option value="">Select Tournament Optional</option>
-                  {tournaments.map((tournament) => (
-                    <option key={tournament.id} value={tournament.id}>
-                      {tournament.name}
-                    </option>
-                  ))}
-                </select>
+                <option value="">Select Tournament Optional</option>
+                {tournaments.map((tournament) => (
+                  <option key={tournament.id} value={tournament.id}>
+                    {tournament.name}
+                  </option>
+                ))}
+              </select>
 
-                <input
-                  value={form.venue}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, venue: e.target.value }))
-                  }
-                  placeholder="Venue"
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none placeholder:text-black/35"
-                />
+              <input
+                value={form.venue}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, venue: e.target.value }))
+                }
+                placeholder="Venue"
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none placeholder:text-black/35"
+              />
 
-                <select
-                  value={form.teamAId}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, teamAId: e.target.value }))
-                  }
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
-                >
-                  <option value="">Select Team A</option>
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}>
-                      {team.name}
-                    </option>
-                  ))}
-                </select>
+              <select
+                value={form.teamAId}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, teamAId: e.target.value }))
+                }
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
+              >
+                <option value="">Select Team A</option>
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
 
-                <select
-                  value={form.teamBId}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, teamBId: e.target.value }))
-                  }
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
-                >
-                  <option value="">Select Team B</option>
-                  {teams.map((team) => (
-                    <option key={team.id} value={team.id}>
-                      {team.name}
-                    </option>
-                  ))}
-                </select>
+              <select
+                value={form.teamBId}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, teamBId: e.target.value }))
+                }
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
+              >
+                <option value="">Select Team B</option>
+                {teams.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
 
-                <input
-                  type="datetime-local"
-                  value={form.matchDate}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      matchDate: e.target.value,
-                    }))
-                  }
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
-                />
+              <input
+                type="datetime-local"
+                value={form.matchDate}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, matchDate: e.target.value }))
+                }
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
+              />
 
-                <select
-                  value={form.status}
-                  onChange={(e) =>
-                    setForm((prev) => ({ ...prev, status: e.target.value }))
-                  }
-                  className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
-                >
-                  <option value="UPCOMING">UPCOMING</option>
-                  <option value="LIVE">LIVE</option>
-                  <option value="COMPLETED">COMPLETED</option>
-                  <option value="CANCELLED">CANCELLED</option>
-                </select>
+              <select
+                value={form.status}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, status: e.target.value }))
+                }
+                className="rounded-xl border border-black/10 bg-white px-4 py-3 text-black outline-none"
+              >
+                <option value="UPCOMING">UPCOMING</option>
+                <option value="LIVE">LIVE</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
 
-                <button className="ui-font w-fit rounded-full bg-[#c8ff00] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-black">
-                  Save Match
-                </button>
-              </form>
-            ) : null}
+              <button className="ui-font w-fit rounded-full bg-[#c8ff00] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-black">
+                Save Match
+              </button>
+            </form>
+          ) : null}
 
-            <div className="mt-10 space-y-4">
-              {loading ? (
-                <div className="glow-card p-6 text-black/55">
-                  Loading matches...
-                </div>
-              ) : matches.length === 0 ? (
-                <div className="glow-card p-6 text-black/55">
-                  No matches found. Create your first match.
-                </div>
-              ) : (
-                matches.map((match) => (
-                  <div key={match.id} className="glow-card p-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                      <div>
-                        <div className="ui-font text-xl font-bold uppercase text-black">
-                          {match.teamA.name} vs {match.teamB.name}
-                        </div>
-
-                        <div className="mono-font mt-2 text-xs uppercase tracking-[0.2em] text-black/40">
-                          {match.venue || "Venue TBA"} ·{" "}
-                          {formatDate(match.matchDate)}
-                        </div>
-
-                        <div className="mono-font mt-2 text-[10px] uppercase tracking-[0.18em] text-black/35">
-                          {match.tournament?.name || "Tournament TBA"}
-                        </div>
+          <div className="mt-10 space-y-4">
+            {loading ? (
+              <div className="glow-card p-6 text-black/55">
+                Loading matches...
+              </div>
+            ) : matches.length === 0 ? (
+              <div className="glow-card p-6 text-black/55">
+                No matches found. Create your first match.
+              </div>
+            ) : (
+              matches.map((match) => (
+                <div key={match.id} className="glow-card p-6">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                      <div className="ui-font text-xl font-bold uppercase text-black">
+                        {match.teamA.name} vs {match.teamB.name}
                       </div>
 
-                      <div className="mono-font text-sm uppercase tracking-[0.2em] text-[#7fb800]">
-                        {match.status}
+                      <div className="mono-font mt-2 text-xs uppercase tracking-[0.2em] text-black/40">
+                        {match.venue || "Venue TBA"} ·{" "}
+                        {formatDate(match.matchDate)}
+                      </div>
+
+                      <div className="mono-font mt-2 text-[10px] uppercase tracking-[0.18em] text-black/35">
+                        {match.tournament?.name || "Tournament TBA"}
                       </div>
                     </div>
 
-                    <div className="mt-5 flex gap-3">
-                      <button className="ui-font rounded-full bg-[#c8ff00] px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
-                        Edit Match
-                      </button>
-
-                      <button className="ui-font rounded-full border border-black/10 px-4 py-2 text-sm font-bold uppercase tracking-[0.16em] text-black">
-                        View Summary
-                      </button>
+                    <div className="mono-font text-sm uppercase tracking-[0.2em] text-[#7fb800]">
+                      {match.status}
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </main>
-        </div>
+                </div>
+              ))
+            )}
+          </div>
+        </main>
       </div>
-    </AdminGuard>
+    </div>
   );
 }

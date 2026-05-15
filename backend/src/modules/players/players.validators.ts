@@ -8,17 +8,20 @@ const emptyToUndefined = (value: unknown) => {
   return value;
 };
 
+const cleanString = z.string().trim().max(120);
+const cleanLongString = z.string().trim().max(500);
+
 export const createPlayerSchema = z.object({
-  userId: z.string().min(1),
-  playerId: z.string().min(2),
-  name: z.string().min(2),
-  phone: z.preprocess(emptyToUndefined, z.string().optional()),
-  city: z.preprocess(emptyToUndefined, z.string().optional()),
-  zone: z.preprocess(emptyToUndefined, z.string().optional()),
-  address: z.preprocess(emptyToUndefined, z.string().optional()),
+  userId: z.string().trim().min(1, "userId is required"),
+  playerId: z.string().trim().min(2, "playerId is required").max(50),
+  name: cleanString.min(2, "Player name must be at least 2 characters"),
+  phone: z.preprocess(emptyToUndefined, cleanString.optional()),
+  city: z.preprocess(emptyToUndefined, cleanString.optional()),
+  zone: z.preprocess(emptyToUndefined, cleanString.optional()),
+  address: z.preprocess(emptyToUndefined, cleanLongString.optional()),
   photoUrl: z.preprocess(
     emptyToUndefined,
-    z.string().url().optional()
+    z.string().trim().url("Photo URL must be valid").max(500).optional()
   ),
 });
 

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
 import { discoverTournaments } from "@/lib/data";
 import { PaymentModal } from "@/components/ui/payment-modal";
 import { StadiumBg } from "@/components/ui/stadium-bg";
 import { useAuth } from "@/components/providers/auth-provider";
+import { UserGuard } from "@/components/providers/user-guard";
 import { API_URL } from "@/lib/api";
 
 type DashboardData = {
@@ -96,8 +96,7 @@ function PerfCard({ title, rows }: { title: string; rows: string[][] }) {
   );
 }
 
-export default function DashboardPage() {
-  const router = useRouter();
+function DashboardContent() {
   const { user, token, loading } = useAuth();
 
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
@@ -111,7 +110,7 @@ export default function DashboardPage() {
     if (loading) return;
 
     if (!user || !token) {
-      router.push("/auth/sign-in");
+      setPageLoading(false);
       return;
     }
 
@@ -124,21 +123,19 @@ export default function DashboardPage() {
         });
 
         if (!res.ok) {
-          router.push("/auth/sign-in");
+          setDashboard(null);
           return;
         }
 
         const data = await res.json();
         setDashboard(data);
-      } catch {
-        router.push("/auth/sign-in");
       } finally {
         setPageLoading(false);
       }
     }
 
     fetchDashboard();
-  }, [user, token, loading, router]);
+  }, [user, token, loading]);
 
   const statCards = useMemo(() => {
     if (!dashboard) return [];
@@ -151,8 +148,27 @@ export default function DashboardPage() {
     ];
   }, [dashboard]);
 
-  if (loading || pageLoading) return null;
-  if (!user || !dashboard) return null;
+  if (loading || pageLoading) {
+    return (
+      <StadiumBg overlay="light">
+        <div className="section-shell section-space text-sm text-black/55">
+          Loading dashboard...
+        </div>
+      </StadiumBg>
+    );
+  }
+
+  if (!user || !dashboard) {
+    return (
+      <StadiumBg overlay="light">
+        <div className="section-shell section-space">
+          <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-6 text-sm text-red-500">
+            Could not load dashboard. Please sign in again.
+          </div>
+        </div>
+      </StadiumBg>
+    );
+  }
 
   return (
     <StadiumBg overlay="light">
@@ -194,7 +210,10 @@ export default function DashboardPage() {
               ["Balls Faced", String(dashboard.batting.ballsFaced)],
               ["Strike Rate", String(dashboard.batting.strikeRate)],
               ["Average", String(dashboard.batting.average)],
-              ["4s / 6s", `${dashboard.batting.fours} / ${dashboard.batting.sixes}`],
+              [
+                "4s / 6s",
+                `${dashboard.batting.fours} / ${dashboard.batting.sixes}`,
+              ],
             ]}
           />
 
@@ -271,7 +290,9 @@ export default function DashboardPage() {
                       <div className="mono-font mt-2 text-[10px] uppercase tracking-[0.18em] text-black/40">
                         {tour.city} · {tour.date} · {tour.format}
                       </div>
-                      <div className="mt-3 text-sm text-black/55">{tour.slots}</div>
+                      <div className="mt-3 text-sm text-black/55">
+                        {tour.slots}
+                      </div>
                     </div>
 
                     <div className="text-right">
@@ -345,5 +366,13 @@ export default function DashboardPage() {
         amount={selectedTournament?.amount ?? ""}
       />
     </StadiumBg>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <UserGuard>
+      <DashboardContent />
+    </UserGuard>
   );
 }

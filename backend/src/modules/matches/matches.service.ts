@@ -1,5 +1,6 @@
 import { MatchStatus } from "@prisma/client";
 import { prisma } from "../../config/prisma";
+import { ApiError, sanitizeOptionalString } from "../../utils/http";
 
 type CreateMatchInput = {
   tournamentId?: string;
@@ -13,17 +14,33 @@ type CreateMatchInput = {
 
 type UpdateMatchInput = Partial<CreateMatchInput>;
 
+function toDate(value?: string) {
+  if (!value) return undefined;
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new ApiError(400, "Invalid match date.");
+  }
+
+  return date;
+}
+
 export const matchesService = {
-  create(data: CreateMatchInput) {
+  async create(data: CreateMatchInput) {
+    if (data.teamAId === data.teamBId) {
+      throw new ApiError(400, "Team A and Team B cannot be the same.");
+    }
+
     return prisma.match.create({
       data: {
         tournamentId: data.tournamentId,
         teamAId: data.teamAId,
         teamBId: data.teamBId,
-        venue: data.venue,
-        matchDate: data.matchDate ? new Date(data.matchDate) : undefined,
+        venue: sanitizeOptionalString(data.venue),
+        matchDate: toDate(data.matchDate),
         status: data.status,
-        summary: data.summary,
+        summary: sanitizeOptionalString(data.summary),
       },
     });
   },
@@ -57,17 +74,21 @@ export const matchesService = {
     });
   },
 
-  update(id: string, data: UpdateMatchInput) {
+  async update(id: string, data: UpdateMatchInput) {
+    if (data.teamAId && data.teamBId && data.teamAId === data.teamBId) {
+      throw new ApiError(400, "Team A and Team B cannot be the same.");
+    }
+
     return prisma.match.update({
       where: { id },
       data: {
         tournamentId: data.tournamentId,
         teamAId: data.teamAId,
         teamBId: data.teamBId,
-        venue: data.venue,
-        matchDate: data.matchDate ? new Date(data.matchDate) : undefined,
+        venue: sanitizeOptionalString(data.venue),
+        matchDate: toDate(data.matchDate),
         status: data.status,
-        summary: data.summary,
+        summary: sanitizeOptionalString(data.summary),
       },
     });
   },

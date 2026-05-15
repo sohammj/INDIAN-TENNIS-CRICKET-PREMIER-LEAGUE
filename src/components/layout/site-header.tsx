@@ -19,13 +19,14 @@ const publicNav = [
 export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, loading, logout } = useAuth();
 
   const navItems = [...publicNav];
 
-  if (user?.role === "USER") {
+  if (user?.role === "USER" || user?.role === "SCORER") {
     navItems.push({ label: "Dashboard", href: "/dashboard" });
   }
+
   if (user?.role === "ADMIN") {
     navItems.push({ label: "Admin", href: "/admin" });
   }
@@ -35,9 +36,7 @@ export function SiteHeader() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 border-b backdrop-blur-xl transition ${
-        isHome
-          ? "border-white/20 bg-white/20"
-          : "border-black/10 bg-white/90"
+        isHome ? "border-white/20 bg-white/20" : "border-black/10 bg-white/90"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
@@ -73,7 +72,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
-          {!user ? (
+          {loading ? null : !user ? (
             <>
               <Link
                 href="/auth/sign-in"
@@ -85,6 +84,7 @@ export function SiteHeader() {
               >
                 Sign In
               </Link>
+
               <Link
                 href="/auth/register"
                 className="ui-font bg-[#c8ff00] px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] text-black transition hover:bg-[#d4ff33]"
@@ -96,7 +96,6 @@ export function SiteHeader() {
             <>
               <div className="flex items-center gap-3">
                 <div className="display-font flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#c8ff00] to-lime-400 text-sm text-black">
-                  {/* {user.initials} */}
                   {user.name
                     .split(" ")
                     .map((word) => word[0])
@@ -104,22 +103,24 @@ export function SiteHeader() {
                     .slice(0, 2)
                     .toUpperCase()}
                 </div>
+
                 <div
                   className={`ui-font text-sm uppercase tracking-[0.18em] ${
-                    isHome ? "text-white/70" : "text-black/70"
+                    isHome ? "text-black/70" : "text-black/70"
                   }`}
                 >
                   {user.name}
                 </div>
               </div>
+
               <button
                 onClick={() => {
                   logout();
-                  router.push("/");
+                  router.replace("/");
                 }}
                 className={`ui-font px-4 py-2 text-sm font-bold uppercase tracking-[0.22em] transition ${
                   isHome
-                    ? "border border-white/15 text-white hover:border-[#c8ff00] hover:text-[#c8ff00]"
+                    ? "border border-black/15 text-black hover:border-[#c8ff00] hover:text-[#7fb800]"
                     : "border border-black/10 text-black hover:border-[#c8ff00] hover:text-[#7fb800]"
                 }`}
               >

@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const players_controller_1 = require("./players.controller");
+const auth_middleware_1 = require("../../middleware/auth.middleware");
+const admin_middleware_1 = require("../../middleware/admin.middleware");
+const rateLimit_middleware_1 = require("../../middleware/rateLimit.middleware");
+const router = (0, express_1.Router)();
+router.get("/", players_controller_1.playersController.findAll);
+router.get("/:id", players_controller_1.playersController.findById);
+router.post("/", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, players_controller_1.playersController.create);
+router.patch("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, players_controller_1.playersController.update);
+router.delete("/:id", auth_middleware_1.protect, admin_middleware_1.requireAdmin, rateLimit_middleware_1.writeRateLimit, players_controller_1.playersController.delete);
+exports.default = router;

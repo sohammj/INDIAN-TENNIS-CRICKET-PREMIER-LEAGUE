@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { API_URL } from "@/lib/api";
+import { API_URL, csrfHeaders } from "@/lib/api";
 
 type User = {
   id: string;
@@ -15,55 +15,71 @@ type AuthContextType = {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ ok: boolean; role?: User["role"] }>;
-  register: (name: string, email: string, password: string) => Promise<{ ok: boolean; role?: User["role"] }>;
-  logout: () => void;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ ok: boolean; role?: User["role"] }>;
+  register: (
+    name: string,
+    email: string,
+    password: string
+  ) => Promise<{ ok: boolean; role?: User["role"] }>;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const USER_KEY = "itcpl-auth-user";
-const TOKEN_KEY = "itcpl-auth-token";
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+
+  // Temporary compatibility for existing admin pages that still send Bearer token.
   const [token, setToken] = useState<string | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const clearSession = () => {
     setUser(null);
     setToken(null);
-    window.localStorage.removeItem(USER_KEY);
-    window.localStorage.removeItem(TOKEN_KEY);
   };
+
+  async function refreshSession() {
+    const res = await fetch(`${API_URL}/api/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        ...(await csrfHeaders()),
+      },
+    });
+
+    if (!res.ok) {
+      clearSession();
+      return false;
+    }
+
+    const data = await res.json();
+
+    setUser(data.user);
+    setToken(data.token);
+
+    return true;
+  }
 
   useEffect(() => {
     async function verifySession() {
-      const storedToken = window.localStorage.getItem(TOKEN_KEY);
-
-      if (!storedToken) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const res = await fetch(`${API_URL}/api/auth/me`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`,
-          },
+          credentials: "include",
         });
 
-        if (!res.ok) {
-          clearSession();
+        if (res.ok) {
+          const verifiedUser = await res.json();
+
+          setUser(verifiedUser);
           setLoading(false);
           return;
         }
 
-        const verifiedUser = await res.json();
-
-        setUser(verifiedUser);
-        setToken(storedToken);
-        window.localStorage.setItem(USER_KEY, JSON.stringify(verifiedUser));
+        await refreshSession();
       } catch {
         clearSession();
       } finally {
@@ -74,18 +90,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     verifySession();
   }, []);
 
-  const saveSession = (nextUser: User, nextToken: string) => {
-    setUser(nextUser);
-    setToken(nextToken);
-    window.localStorage.setItem(USER_KEY, JSON.stringify(nextUser));
-    window.localStorage.setItem(TOKEN_KEY, nextToken);
-  };
-
   const login = async (email: string, password: string) => {
     const res = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(await csrfHeaders()),
       },
       body: JSON.stringify({ email, password }),
     });
@@ -93,7 +104,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) return { ok: false };
 
     const data = await res.json();
-    saveSession(data.user, data.token);
+
+    setUser(data.user);
+    setToken(data.token);
 
     return { ok: true, role: data.user.role };
   };
@@ -101,8 +114,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (name: string, email: string, password: string) => {
     const res = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        ...(await csrfHeaders()),
       },
       body: JSON.stringify({ name, email, password }),
     });
@@ -110,13 +125,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) return { ok: false };
 
     const data = await res.json();
-    saveSession(data.user, data.token);
+
+    setUser(data.user);
+    setToken(data.token);
 
     return { ok: true, role: data.user.role };
   };
 
-  const logout = () => {
-    clearSession();
+  const logout = async () => {
+    try {
+      await fetch(`${API_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          ...(await csrfHeaders()),
+        },
+      });
+    } finally {
+      clearSession();
+    }
   };
 
   const value = useMemo(
