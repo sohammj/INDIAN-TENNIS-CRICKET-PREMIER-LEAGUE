@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { useAuth } from "@/components/providers/auth-provider";
-import { API_URL } from "@/lib/api";
+import { API_URL, csrfHeaders } from "@/lib/api";
 
 type Team = {
   id: string;
@@ -43,7 +43,7 @@ function formatDate(date: string | null) {
 }
 
 export default function AdminMatchesPage() {
-  const { token } = useAuth();
+
 
   const [matches, setMatches] = useState<Match[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -89,10 +89,7 @@ export default function AdminMatchesPage() {
   async function handleCreateMatch(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!token) {
-      alert("Admin session missing. Please login again.");
-      return;
-    }
+   
 
     if (!form.teamAId || !form.teamBId) {
       alert("Select both teams.");
@@ -106,9 +103,10 @@ export default function AdminMatchesPage() {
 
     const res = await fetch(`${API_URL}/api/matches`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...(await csrfHeaders()),
       },
       body: JSON.stringify({
         tournamentId: form.tournamentId || undefined,

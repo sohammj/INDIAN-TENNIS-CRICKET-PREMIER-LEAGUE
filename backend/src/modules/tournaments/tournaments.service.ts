@@ -18,6 +18,7 @@ export const tournamentsService = {
 
   findAll() {
     return prisma.tournament.findMany({
+      take: 50,
       orderBy: { createdAt: "desc" },
     });
   },

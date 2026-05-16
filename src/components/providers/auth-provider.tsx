@@ -13,7 +13,6 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  token: string | null;
   loading: boolean;
   login: (
     email: string,
@@ -31,24 +30,17 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-
-  // Temporary compatibility for existing admin pages that still send Bearer token.
-  const [token, setToken] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(true);
 
   const clearSession = () => {
     setUser(null);
-    setToken(null);
   };
 
   async function refreshSession() {
     const res = await fetch(`${API_URL}/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        ...(await csrfHeaders()),
-      },
+      headers: await csrfHeaders(),
     });
 
     if (!res.ok) {
@@ -57,9 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const data = await res.json();
-
     setUser(data.user);
-    setToken(data.token);
 
     return true;
   }
@@ -73,9 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (res.ok) {
           const verifiedUser = await res.json();
-
           setUser(verifiedUser);
-          setLoading(false);
           return;
         }
 
@@ -104,9 +92,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) return { ok: false };
 
     const data = await res.json();
-
     setUser(data.user);
-    setToken(data.token);
 
     return { ok: true, role: data.user.role };
   };
@@ -125,9 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) return { ok: false };
 
     const data = await res.json();
-
     setUser(data.user);
-    setToken(data.token);
 
     return { ok: true, role: data.user.role };
   };
@@ -137,9 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await fetch(`${API_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          ...(await csrfHeaders()),
-        },
+        headers: await csrfHeaders(),
       });
     } finally {
       clearSession();
@@ -149,13 +131,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo(
     () => ({
       user,
-      token,
       loading,
       login,
       register,
       logout,
     }),
-    [user, token, loading]
+    [user, loading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

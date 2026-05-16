@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMeDashboard = getMeDashboard;
 const dashboard_service_1 = require("./dashboard.service");
+const http_1 = require("../../utils/http");
 async function getMeDashboard(req, res) {
     try {
         if (!req.user) {
@@ -11,8 +12,6 @@ async function getMeDashboard(req, res) {
         return res.json(dashboard);
     }
     catch (error) {
-        return res.status(500).json({
-            message: error.message || "Failed to fetch dashboard",
-        });
+        return (0, http_1.handleControllerError)(res, error, "Failed to fetch dashboard.");
     }
 }

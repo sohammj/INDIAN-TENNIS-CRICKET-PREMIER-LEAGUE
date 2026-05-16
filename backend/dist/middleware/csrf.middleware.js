@@ -31,12 +31,6 @@ function csrfProtection(req, res, next) {
     if (safeMethods.includes(req.method)) {
         return next();
     }
-    // Temporary compatibility:
-    // Existing admin writes still use Bearer token, so don't break them yet.
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith("Bearer ")) {
-        return next();
-    }
     const csrfCookie = req.cookies?.[exports.CSRF_COOKIE_NAME];
     const csrfHeader = req.headers[exports.CSRF_HEADER_NAME];
     if (!csrfCookie ||

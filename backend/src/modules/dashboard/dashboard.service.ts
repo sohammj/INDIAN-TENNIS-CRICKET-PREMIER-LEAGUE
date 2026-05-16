@@ -10,17 +10,64 @@ export async function getMyDashboard(userId: string) {
       role: true,
       createdAt: true,
       playerProfile: {
-        include: {
+        select: {
+          id: true,
+          playerId: true,
+          name: true,
+          phone: true,
+          city: true,
+          zone: true,
+          address: true,
+          photoUrl: true,
           matchStats: true,
           registrations: {
-            include: {
-              tournament: true,
+            select: {
+              id: true,
+              status: true,
+              tournament: {
+                select: {
+                  id: true,
+                  name: true,
+                  city: true,
+                  zone: true,
+                  status: true,
+                },
+              },
             },
           },
-          payments: true,
+          payments: {
+            select: {
+              id: true,
+              amount: true,
+              currency: true,
+              status: true,
+              provider: true,
+              providerRef: true,
+              createdAt: true,
+              tournament: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
           teamLinks: {
-            include: {
-              team: true,
+            select: {
+              id: true,
+              role: true,
+              status: true,
+              team: {
+                select: {
+                  id: true,
+                  name: true,
+                  city: true,
+                  zone: true,
+                },
+              },
             },
           },
         },
@@ -45,7 +92,10 @@ export async function getMyDashboard(userId: string) {
 
   const totalOvers = stats.reduce((sum, item) => sum + item.oversBowled, 0);
   const totalWickets = stats.reduce((sum, item) => sum + item.wickets, 0);
-  const totalRunsConceded = stats.reduce((sum, item) => sum + item.runsConceded, 0);
+  const totalRunsConceded = stats.reduce(
+    (sum, item) => sum + item.runsConceded,
+    0
+  );
   const totalDotBalls = stats.reduce((sum, item) => sum + item.dotBalls, 0);
 
   const totalCatches = stats.reduce((sum, item) => sum + item.catches, 0);
@@ -63,21 +113,34 @@ export async function getMyDashboard(userId: string) {
       createdAt: user.createdAt,
     },
 
-    playerProfile: user.playerProfile,
+    playerProfile: user.playerProfile
+      ? {
+          id: user.playerProfile.id,
+          playerId: user.playerProfile.playerId,
+          name: user.playerProfile.name,
+          phone: user.playerProfile.phone,
+          city: user.playerProfile.city,
+          zone: user.playerProfile.zone,
+          address: user.playerProfile.address,
+          photoUrl: user.playerProfile.photoUrl,
+        }
+      : null,
 
     overview: {
       matchesPlayed: stats.length,
       tournamentsPlayed: registrations.length,
       totalRuns,
       totalWickets,
-      paymentsMade: payments.filter((payment) => payment.status === "COMPLETED").length,
+      paymentsMade: payments.filter((payment) => payment.status === "COMPLETED")
+        .length,
       mvpPoints: totalMvpPoints,
     },
 
     batting: {
       runs: totalRuns,
       ballsFaced: totalBalls,
-      strikeRate: totalBalls > 0 ? Number(((totalRuns / totalBalls) * 100).toFixed(2)) : 0,
+      strikeRate:
+        totalBalls > 0 ? Number(((totalRuns / totalBalls) * 100).toFixed(2)) : 0,
       average: Number((totalRuns / dismissals).toFixed(2)),
       fours: totalFours,
       sixes: totalSixes,
@@ -87,7 +150,8 @@ export async function getMyDashboard(userId: string) {
       overs: totalOvers,
       wickets: totalWickets,
       runsConceded: totalRunsConceded,
-      economy: totalOvers > 0 ? Number((totalRunsConceded / totalOvers).toFixed(2)) : 0,
+      economy:
+        totalOvers > 0 ? Number((totalRunsConceded / totalOvers).toFixed(2)) : 0,
       dotBalls: totalDotBalls,
     },
 
@@ -105,13 +169,25 @@ export async function getMyDashboard(userId: string) {
       registrationStatus: registration.status,
     })),
 
-    teams: user.playerProfile?.teamLinks.map((link) => ({
-      id: link.team.id,
-      name: link.team.name,
-      city: link.team.city,
-      zone: link.team.zone,
-      role: link.role,
-      status: link.status,
-    })) ?? [],
+    teams:
+      user.playerProfile?.teamLinks.map((link) => ({
+        id: link.team.id,
+        name: link.team.name,
+        city: link.team.city,
+        zone: link.team.zone,
+        role: link.role,
+        status: link.status,
+      })) ?? [],
+
+    payments: payments.map((payment) => ({
+      id: payment.id,
+      amount: payment.amount,
+      currency: payment.currency,
+      status: payment.status,
+      provider: payment.provider,
+      providerRef: payment.providerRef,
+      createdAt: payment.createdAt,
+      tournament: payment.tournament,
+    })),
   };
 }

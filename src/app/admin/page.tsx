@@ -68,21 +68,19 @@ function formatDate(date: string | null) {
 }
 
 export default function AdminPage() {
-  const { token, loading } = useAuth();
 
   const [overview, setOverview] = useState<AdminOverview | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
 
+  const { loading } = useAuth();
+
   useEffect(() => {
     if (loading) return;
-    if (!token) return;
 
     async function fetchOverview() {
       try {
         const res = await fetch(`${API_URL}/api/admin/overview`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
         });
 
         if (!res.ok) {
@@ -98,8 +96,7 @@ export default function AdminPage() {
     }
 
     fetchOverview();
-  }, [token, loading]);
-
+  }, [loading]);
   const statCards = overview
     ? [
         ["Registered Players", overview.stats.totalRegisteredPlayers],

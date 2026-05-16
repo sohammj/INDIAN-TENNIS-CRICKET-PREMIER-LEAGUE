@@ -5,11 +5,29 @@ const prisma_1 = require("../../config/prisma");
 exports.rankingsService = {
     async findAll() {
         const players = await prisma_1.prisma.playerProfile.findMany({
-            include: {
-                matchStats: true,
+            take: 100,
+            select: {
+                id: true,
+                playerId: true,
+                name: true,
+                city: true,
+                zone: true,
+                matchStats: {
+                    select: {
+                        runs: true,
+                        wickets: true,
+                        catches: true,
+                        runOuts: true,
+                        mvpPoints: true,
+                    },
+                },
                 teamLinks: {
-                    include: {
-                        team: true,
+                    select: {
+                        team: {
+                            select: {
+                                name: true,
+                            },
+                        },
                     },
                 },
             },
@@ -22,11 +40,7 @@ exports.rankingsService = {
             const catches = player.matchStats.reduce((sum, stat) => sum + stat.catches, 0);
             const runOuts = player.matchStats.reduce((sum, stat) => sum + stat.runOuts, 0);
             const mvpPoints = player.matchStats.reduce((sum, stat) => sum + stat.mvpPoints, 0);
-            const calculatedPoints = mvpPoints +
-                runs +
-                wickets * 25 +
-                catches * 10 +
-                runOuts * 15;
+            const calculatedPoints = mvpPoints + runs + wickets * 25 + catches * 10 + runOuts * 15;
             return {
                 id: player.id,
                 playerId: player.playerId,

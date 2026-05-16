@@ -1,5 +1,51 @@
 import { prisma } from "../../config/prisma";
-import { ApiError, sanitizeOptionalString, sanitizeString } from "../../utils/http";
+import {
+  ApiError,
+  sanitizeOptionalString,
+  sanitizeString,
+} from "../../utils/http";
+
+const safeTeamInclude = {
+  players: {
+    select: {
+      id: true,
+      role: true,
+      status: true,
+      joinedAt: true,
+      player: {
+        select: {
+          id: true,
+          playerId: true,
+          name: true,
+          city: true,
+          zone: true,
+          photoUrl: true,
+        },
+      },
+    },
+    orderBy: {
+      joinedAt: "desc" as const,
+    },
+  },
+  homeMatches: {
+    select: {
+      id: true,
+      venue: true,
+      matchDate: true,
+      status: true,
+      summary: true,
+    },
+  },
+  awayMatches: {
+    select: {
+      id: true,
+      venue: true,
+      matchDate: true,
+      status: true,
+      summary: true,
+    },
+  },
+};
 
 export const teamsService = {
   async assignPlayer(teamId: string, data: { playerId: string; role?: string }) {
@@ -41,9 +87,29 @@ export const teamsService = {
         playerId: data.playerId,
         role: sanitizeOptionalString(data.role),
       },
-      include: {
-        team: true,
-        player: true,
+      select: {
+        id: true,
+        role: true,
+        status: true,
+        joinedAt: true,
+        team: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            zone: true,
+          },
+        },
+        player: {
+          select: {
+            id: true,
+            playerId: true,
+            name: true,
+            city: true,
+            zone: true,
+            photoUrl: true,
+          },
+        },
       },
     });
   },
@@ -69,23 +135,22 @@ export const teamsService = {
         zone: sanitizeOptionalString(data.zone),
         logoUrl: sanitizeOptionalString(data.logoUrl),
       },
+      select: {
+        id: true,
+        name: true,
+        city: true,
+        zone: true,
+        logoUrl: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   },
 
   findAll() {
     return prisma.team.findMany({
-      include: {
-        players: {
-          include: {
-            player: true,
-          },
-          orderBy: {
-            joinedAt: "desc",
-          },
-        },
-        homeMatches: true,
-        awayMatches: true,
-      },
+      take: 50,
+      include: safeTeamInclude,
       orderBy: {
         createdAt: "desc",
       },
@@ -97,18 +162,7 @@ export const teamsService = {
       where: {
         id,
       },
-      include: {
-        players: {
-          include: {
-            player: true,
-          },
-          orderBy: {
-            joinedAt: "desc",
-          },
-        },
-        homeMatches: true,
-        awayMatches: true,
-      },
+      include: safeTeamInclude,
     });
   },
 
@@ -130,6 +184,15 @@ export const teamsService = {
         city: sanitizeOptionalString(data.city),
         zone: sanitizeOptionalString(data.zone),
         logoUrl: sanitizeOptionalString(data.logoUrl),
+      },
+      select: {
+        id: true,
+        name: true,
+        city: true,
+        zone: true,
+        logoUrl: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   },

@@ -3,6 +3,47 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.teamsService = void 0;
 const prisma_1 = require("../../config/prisma");
 const http_1 = require("../../utils/http");
+const safeTeamInclude = {
+    players: {
+        select: {
+            id: true,
+            role: true,
+            status: true,
+            joinedAt: true,
+            player: {
+                select: {
+                    id: true,
+                    playerId: true,
+                    name: true,
+                    city: true,
+                    zone: true,
+                    photoUrl: true,
+                },
+            },
+        },
+        orderBy: {
+            joinedAt: "desc",
+        },
+    },
+    homeMatches: {
+        select: {
+            id: true,
+            venue: true,
+            matchDate: true,
+            status: true,
+            summary: true,
+        },
+    },
+    awayMatches: {
+        select: {
+            id: true,
+            venue: true,
+            matchDate: true,
+            status: true,
+            summary: true,
+        },
+    },
+};
 exports.teamsService = {
     async assignPlayer(teamId, data) {
         const team = await prisma_1.prisma.team.findUnique({
@@ -37,9 +78,29 @@ exports.teamsService = {
                 playerId: data.playerId,
                 role: (0, http_1.sanitizeOptionalString)(data.role),
             },
-            include: {
-                team: true,
-                player: true,
+            select: {
+                id: true,
+                role: true,
+                status: true,
+                joinedAt: true,
+                team: {
+                    select: {
+                        id: true,
+                        name: true,
+                        city: true,
+                        zone: true,
+                    },
+                },
+                player: {
+                    select: {
+                        id: true,
+                        playerId: true,
+                        name: true,
+                        city: true,
+                        zone: true,
+                        photoUrl: true,
+                    },
+                },
             },
         });
     },
@@ -58,22 +119,21 @@ exports.teamsService = {
                 zone: (0, http_1.sanitizeOptionalString)(data.zone),
                 logoUrl: (0, http_1.sanitizeOptionalString)(data.logoUrl),
             },
+            select: {
+                id: true,
+                name: true,
+                city: true,
+                zone: true,
+                logoUrl: true,
+                createdAt: true,
+                updatedAt: true,
+            },
         });
     },
     findAll() {
         return prisma_1.prisma.team.findMany({
-            include: {
-                players: {
-                    include: {
-                        player: true,
-                    },
-                    orderBy: {
-                        joinedAt: "desc",
-                    },
-                },
-                homeMatches: true,
-                awayMatches: true,
-            },
+            take: 50,
+            include: safeTeamInclude,
             orderBy: {
                 createdAt: "desc",
             },
@@ -84,18 +144,7 @@ exports.teamsService = {
             where: {
                 id,
             },
-            include: {
-                players: {
-                    include: {
-                        player: true,
-                    },
-                    orderBy: {
-                        joinedAt: "desc",
-                    },
-                },
-                homeMatches: true,
-                awayMatches: true,
-            },
+            include: safeTeamInclude,
         });
     },
     update(id, data) {
@@ -108,6 +157,15 @@ exports.teamsService = {
                 city: (0, http_1.sanitizeOptionalString)(data.city),
                 zone: (0, http_1.sanitizeOptionalString)(data.zone),
                 logoUrl: (0, http_1.sanitizeOptionalString)(data.logoUrl),
+            },
+            select: {
+                id: true,
+                name: true,
+                city: true,
+                zone: true,
+                logoUrl: true,
+                createdAt: true,
+                updatedAt: true,
             },
         });
     },

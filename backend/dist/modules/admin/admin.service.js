@@ -32,17 +32,48 @@ async function getAdminOverview() {
             orderBy: {
                 joinedAt: "desc",
             },
-            include: {
-                team: true,
-                player: true,
+            select: {
+                id: true,
+                role: true,
+                status: true,
+                team: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
+                player: {
+                    select: {
+                        id: true,
+                        playerId: true,
+                        name: true,
+                        city: true,
+                        zone: true,
+                    },
+                },
             },
         }),
         prisma_1.prisma.playerProfile.findMany({
-            include: {
-                matchStats: true,
+            select: {
+                id: true,
+                playerId: true,
+                name: true,
+                city: true,
+                zone: true,
+                matchStats: {
+                    select: {
+                        runs: true,
+                        wickets: true,
+                        mvpPoints: true,
+                    },
+                },
                 teamLinks: {
-                    include: {
-                        team: true,
+                    select: {
+                        team: {
+                            select: {
+                                name: true,
+                            },
+                        },
                     },
                 },
             },
@@ -57,10 +88,26 @@ async function getAdminOverview() {
                     createdAt: "desc",
                 },
             ],
-            include: {
-                tournament: true,
-                teamA: true,
-                teamB: true,
+            select: {
+                id: true,
+                venue: true,
+                matchDate: true,
+                status: true,
+                tournament: {
+                    select: {
+                        name: true,
+                    },
+                },
+                teamA: {
+                    select: {
+                        name: true,
+                    },
+                },
+                teamB: {
+                    select: {
+                        name: true,
+                    },
+                },
             },
         }),
     ]);
@@ -116,6 +163,7 @@ async function getAdminOverview() {
 }
 async function getAdminUsers() {
     return prisma_1.prisma.user.findMany({
+        take: 100,
         orderBy: { createdAt: "desc" },
         select: {
             id: true,
@@ -137,16 +185,39 @@ async function getAdminUsers() {
 }
 async function getAdminPayments() {
     return prisma_1.prisma.payment.findMany({
+        take: 100,
         orderBy: { createdAt: "desc" },
-        include: {
+        select: {
+            id: true,
+            amount: true,
+            currency: true,
+            status: true,
+            provider: true,
+            providerRef: true,
+            createdAt: true,
             user: {
                 select: {
                     name: true,
                     email: true,
                 },
             },
-            player: true,
-            tournament: true,
+            player: {
+                select: {
+                    id: true,
+                    playerId: true,
+                    name: true,
+                    city: true,
+                    zone: true,
+                },
+            },
+            tournament: {
+                select: {
+                    id: true,
+                    name: true,
+                    city: true,
+                    zone: true,
+                },
+            },
         },
     });
 }

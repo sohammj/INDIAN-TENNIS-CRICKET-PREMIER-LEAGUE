@@ -97,7 +97,7 @@ function PerfCard({ title, rows }: { title: string; rows: string[][] }) {
 }
 
 function DashboardContent() {
-  const { user, token, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
   const [pageLoading, setPageLoading] = useState(true);
@@ -109,7 +109,7 @@ function DashboardContent() {
   useEffect(() => {
     if (loading) return;
 
-    if (!user || !token) {
+    if (!user) {
       setPageLoading(false);
       return;
     }
@@ -117,9 +117,7 @@ function DashboardContent() {
     async function fetchDashboard() {
       try {
         const res = await fetch(`${API_URL}/api/dashboard/me`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          credentials: "include",
         });
 
         if (!res.ok) {
@@ -135,7 +133,7 @@ function DashboardContent() {
     }
 
     fetchDashboard();
-  }, [user, token, loading]);
+  }, [user, loading]);
 
   const statCards = useMemo(() => {
     if (!dashboard) return [];

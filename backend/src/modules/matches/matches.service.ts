@@ -47,10 +47,38 @@ export const matchesService = {
 
   findAll() {
     return prisma.match.findMany({
-      include: {
-        tournament: true,
-        teamA: true,
-        teamB: true,
+      take: 50,
+      select: {
+        id: true,
+        venue: true,
+        matchDate: true,
+        status: true,
+        summary: true,
+        tournament: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            zone: true,
+            status: true,
+          },
+        },
+        teamA: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            zone: true,
+          },
+        },
+        teamB: {
+          select: {
+            id: true,
+            name: true,
+            city: true,
+            zone: true,
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

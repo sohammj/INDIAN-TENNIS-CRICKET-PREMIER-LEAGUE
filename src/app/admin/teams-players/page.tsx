@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { AdminSidebar } from "@/components/layout/admin-sidebar";
 import { useAuth } from "@/components/providers/auth-provider";
-import { API_URL } from "@/lib/api";
+import { API_URL, csrfHeaders } from "@/lib/api";
 
 type TeamPlayerLink = {
   id: string;
@@ -47,12 +47,11 @@ function getShortName(name: string) {
 }
 
 export default function AdminTeamsPlayersPage() {
-  const { token, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
 
   const [teams, setTeams] = useState<Team[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [showCreate, setShowCreate] = useState(false);
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
 
@@ -70,8 +69,14 @@ export default function AdminTeamsPlayersPage() {
   async function fetchData() {
     try {
       const [teamsRes, playersRes] = await Promise.all([
-        fetch(`${API_URL}/api/teams`, { cache: "no-store" }),
-        fetch(`${API_URL}/api/players`, { cache: "no-store" }),
+        fetch(`${API_URL}/api/teams`, {
+          cache: "no-store",
+          credentials: "include",
+        }),
+        fetch(`${API_URL}/api/players`, {
+          cache: "no-store",
+          credentials: "include",
+        }),
       ]);
 
       const [teamsData, playersData] = await Promise.all([
@@ -79,8 +84,8 @@ export default function AdminTeamsPlayersPage() {
         playersRes.json(),
       ]);
 
-      setTeams(teamsData);
-      setPlayers(playersData);
+      setTeams(Array.isArray(teamsData) ? teamsData : []);
+      setPlayers(Array.isArray(playersData) ? playersData : []);
     } finally {
       setLoading(false);
     }
@@ -117,11 +122,6 @@ export default function AdminTeamsPlayersPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!token) {
-      alert("Admin session missing. Please login again.");
-      return;
-    }
-
     if (!form.name.trim()) {
       alert("Team name is required.");
       return;
@@ -137,17 +137,19 @@ export default function AdminTeamsPlayersPage() {
     const res = editingTeamId
       ? await fetch(`${API_URL}/api/teams/${editingTeamId}`, {
           method: "PATCH",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(await csrfHeaders()),
           },
           body: JSON.stringify(payload),
         })
       : await fetch(`${API_URL}/api/teams`, {
           method: "POST",
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            ...(await csrfHeaders()),
           },
           body: JSON.stringify(payload),
         });
@@ -163,19 +165,13 @@ export default function AdminTeamsPlayersPage() {
   }
 
   async function handleDelete(teamId: string) {
-    if (!token) {
-      alert("Admin session missing. Please login again.");
-      return;
-    }
-
     const confirmed = window.confirm("Delete this team?");
     if (!confirmed) return;
 
     const res = await fetch(`${API_URL}/api/teams/${teamId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
+      headers: await csrfHeaders(),
     });
 
     if (!res.ok) {
@@ -195,16 +191,12 @@ export default function AdminTeamsPlayersPage() {
       return;
     }
 
-    if (!token) {
-      alert("Admin token missing. Please login again.");
-      return;
-    }
-
     const res = await fetch(`${API_URL}/api/teams/${teamId}/players`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        ...(await csrfHeaders()),
       },
       body: JSON.stringify({
         playerId: selected.playerId,
@@ -230,19 +222,13 @@ export default function AdminTeamsPlayersPage() {
   }
 
   async function removePlayerFromTeam(teamId: string, linkId: string) {
-    if (!token) {
-      alert("Admin token missing. Please login again.");
-      return;
-    }
-
     const confirmed = window.confirm("Remove this player from the team?");
     if (!confirmed) return;
 
     const res = await fetch(`${API_URL}/api/teams/${teamId}/players/${linkId}`, {
       method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      credentials: "include",
+      headers: await csrfHeaders(),
     });
 
     if (!res.ok) {
@@ -278,11 +264,8 @@ export default function AdminTeamsPlayersPage() {
 
             <button
               onClick={() => {
-                if (showCreate) {
-                  resetForm();
-                } else {
-                  setShowCreate(true);
-                }
+                if (showCreate) resetForm();
+                else setShowCreate(true);
               }}
               className="ui-font rounded-full bg-[#c8ff00] px-5 py-3 text-sm font-bold uppercase tracking-[0.18em] text-black"
             >
@@ -339,9 +322,7 @@ export default function AdminTeamsPlayersPage() {
 
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {loading || authLoading ? (
-              <div className="glow-card p-6 text-black/55">
-                Loading teams...
-              </div>
+              <div className="glow-card p-6 text-black/55">Loading teams...</div>
             ) : teams.length === 0 ? (
               <div className="glow-card p-6 text-black/55">
                 No teams found. Create your first team.
@@ -499,7 +480,10 @@ export default function AdminTeamsPlayersPage() {
                           </tr>
                         ) : (
                           team.players.map((link) => (
-                            <tr key={link.id} className="border-b border-black/10">
+                            <tr
+                              key={link.id}
+                              className="border-b border-black/10"
+                            >
                               <td className="px-3 py-3 text-xs text-black/50">
                                 {link.player.playerId}
                               </td>

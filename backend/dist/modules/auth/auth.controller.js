@@ -25,13 +25,23 @@ const refreshCookieOptions = {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
 };
+const clearAccessCookieOptions = {
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
+};
+const clearRefreshCookieOptions = {
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
+};
 function setAuthCookies(res, tokens) {
     res.cookie("accessToken", tokens.accessToken, accessCookieOptions);
     res.cookie("refreshToken", tokens.refreshToken, refreshCookieOptions);
 }
 function clearAuthCookies(res) {
-    res.clearCookie("accessToken", { path: "/" });
-    res.clearCookie("refreshToken", { path: "/" });
+    res.clearCookie("accessToken", clearAccessCookieOptions);
+    res.clearCookie("refreshToken", clearRefreshCookieOptions);
     res.clearCookie("csrfToken", { path: "/" });
 }
 async function csrf(_req, res) {
@@ -53,7 +63,6 @@ async function register(req, res) {
         setAuthCookies(res, result);
         (0, csrf_middleware_1.setCsrfCookie)(res);
         return res.status(201).json({
-            token: result.accessToken,
             user: result.user,
         });
     }
@@ -80,7 +89,6 @@ async function login(req, res) {
         setAuthCookies(res, result);
         (0, csrf_middleware_1.setCsrfCookie)(res);
         return res.status(200).json({
-            token: result.accessToken,
             user: result.user,
         });
     }
@@ -101,7 +109,6 @@ async function refresh(req, res) {
         setAuthCookies(res, result);
         (0, csrf_middleware_1.setCsrfCookie)(res);
         return res.status(200).json({
-            token: result.accessToken,
             user: result.user,
         });
     }

@@ -23,24 +23,43 @@ export const playersService = {
         address: sanitizeOptionalString(data.address),
         photoUrl: sanitizeOptionalString(data.photoUrl),
       },
+      select: {
+        id: true,
+        playerId: true,
+        name: true,
+        city: true,
+        zone: true,
+        photoUrl: true,
+        createdAt: true,
+      },
     });
   },
 
   findAll() {
     return prisma.playerProfile.findMany({
+      take: 50,
       orderBy: { createdAt: "desc" },
-      include: {
-        user: {
+      select: {
+        id: true,
+        playerId: true,
+        name: true,
+        city: true,
+        zone: true,
+        photoUrl: true,
+        createdAt: true,
+        teamLinks: {
           select: {
             id: true,
-            name: true,
-            email: true,
             role: true,
-          },
-        },
-        teamLinks: {
-          include: {
-            team: true,
+            status: true,
+            team: {
+              select: {
+                id: true,
+                name: true,
+                city: true,
+                zone: true,
+              },
+            },
           },
         },
       },
@@ -50,22 +69,44 @@ export const playersService = {
   findById(id: string) {
     return prisma.playerProfile.findUnique({
       where: { id },
-      include: {
-        user: {
+      select: {
+        id: true,
+        playerId: true,
+        name: true,
+        city: true,
+        zone: true,
+        photoUrl: true,
+        createdAt: true,
+        teamLinks: {
           select: {
             id: true,
-            name: true,
-            email: true,
             role: true,
-            createdAt: true,
+            status: true,
+            team: {
+              select: {
+                id: true,
+                name: true,
+                city: true,
+                zone: true,
+              },
+            },
           },
         },
-        teamLinks: {
-          include: {
-            team: true,
+        matchStats: {
+          select: {
+            id: true,
+            runs: true,
+            ballsFaced: true,
+            fours: true,
+            sixes: true,
+            oversBowled: true,
+            runsConceded: true,
+            wickets: true,
+            catches: true,
+            runOuts: true,
+            mvpPoints: true,
           },
         },
-        matchStats: true,
       },
     });
   },
@@ -92,6 +133,15 @@ export const playersService = {
         zone: sanitizeOptionalString(data.zone),
         address: sanitizeOptionalString(data.address),
         photoUrl: sanitizeOptionalString(data.photoUrl),
+      },
+      select: {
+        id: true,
+        playerId: true,
+        name: true,
+        city: true,
+        zone: true,
+        photoUrl: true,
+        updatedAt: true,
       },
     });
   },
