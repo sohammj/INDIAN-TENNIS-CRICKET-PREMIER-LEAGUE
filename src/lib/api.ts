@@ -12,27 +12,23 @@ export function getCookie(name: string): string | null {
 }
 
 export async function ensureCsrfToken(): Promise<string | null> {
-  const existing = getCookie("csrfToken");
-
-  if (existing) return existing;
-
   const res = await fetch(`${API_URL}/api/auth/csrf`, {
     method: "GET",
     credentials: "include",
+    cache: "no-store",
   });
 
   if (!res.ok) return null;
 
   const data: { csrfToken?: string } = await res.json();
+
   return data.csrfToken || getCookie("csrfToken");
 }
 
 export async function csrfHeaders(): Promise<Record<string, string>> {
   const csrfToken = await ensureCsrfToken();
 
-  if (!csrfToken) {
-    return {};
-  }
+  if (!csrfToken) return {};
 
   return {
     "x-csrf-token": csrfToken,
