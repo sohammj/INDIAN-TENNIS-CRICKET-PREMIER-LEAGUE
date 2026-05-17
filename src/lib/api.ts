@@ -1,5 +1,4 @@
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+export const API_URL = "";
 
 export function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -21,7 +20,6 @@ export async function ensureCsrfToken(): Promise<string | null> {
   if (!res.ok) return null;
 
   const data: { csrfToken?: string } = await res.json();
-
   return data.csrfToken || getCookie("csrfToken");
 }
 
