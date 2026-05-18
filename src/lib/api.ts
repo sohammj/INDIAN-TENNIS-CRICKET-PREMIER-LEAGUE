@@ -1,4 +1,7 @@
-export const API_URL = "";
+export const API_URL =
+  typeof window === "undefined"
+    ? (process.env.NEXT_PUBLIC_API_URL ?? "")
+    : "";
 
 export function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -20,7 +23,8 @@ export async function ensureCsrfToken(): Promise<string | null> {
   if (!res.ok) return null;
 
   const data: { csrfToken?: string } = await res.json();
-  return data.csrfToken || getCookie("csrfToken");
+  // Prefer response body — cookie may not yet be committed to document.cookie
+  return data.csrfToken ?? getCookie("csrfToken") ?? null;
 }
 
 export async function csrfHeaders(): Promise<Record<string, string>> {
